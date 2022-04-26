@@ -24,7 +24,7 @@ const ProductCarousel = () => {
                     <Link to={`/product/${product._id}`}>
                         <Image src={product.image} alt={product.name} fluid />
                         <Carousel.Caption className='carousel-caption'>
-                            <h2>{product.name}({product.bid})DT</h2>
+                            <h2>{product.name}({product.currentPrice})DT</h2>
                         </Carousel.Caption>
                     </Link>
                 </Carousel.Item>

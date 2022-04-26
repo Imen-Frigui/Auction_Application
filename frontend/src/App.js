@@ -12,6 +12,7 @@ import UserListScreen from './screens/UserListScreen'
 import UserEditScreen from './screens/UserEditScreen'
 import ProductListScreen from './screens/ProductListScreen'
 import ProductEditScreen from './screens/ProductEditScreen'
+import UserEditProduct from './screens/UserEditProduct'
 
 function App() {
   return (
@@ -28,9 +29,13 @@ function App() {
         <Route path='/myposts' />
         <Route path='/admin/userlist' element={<UserListScreen/>} />
         <Route path='/admin/user/:id/edit' element={<UserEditScreen/>} />
+        <Route path='/user/:id/edit' element={<UserEditScreen/>} />
         <Route exact path='/admin/productlist' element={<ProductListScreen/>} />
         <Route exact path='/admin/productlist/:pageNumber' element={<ProductListScreen/>} />
         <Route path='/admin/product/:id/edit' element={<ProductEditScreen/>} />
+
+        <Route path='/product/:id/edit' element={<UserEditProduct/>} />
+
         <Route exact path='/search/:keyword' element={<HomeScreen/>}/>
         <Route path='/search/:keyword/page/:pageNumber' element={<HomeScreen/>}/>
         <Route path='/page/:pageNumber' element={<HomeScreen/>}/>

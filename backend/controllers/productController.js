@@ -3,7 +3,7 @@ import Product from '../models/productModel.js'
 
 //get all products ___ GET /api/products PUBLIC
 const getProducts = AsyncHandler(async(req, res) => {
-    const pageSize = 2
+    const pageSize = 5
     const page = Number(req.query.pageNumber) || 1
   
     const keyword = req.query.keyword ?{
@@ -15,16 +15,16 @@ const getProducts = AsyncHandler(async(req, res) => {
     
     const count = await Product.countDocuments({ ...keyword })
 
-    const products = await Product.find({...keyword}).limit(pageSize).skip(pageSize * (page - 1))
+    const products = await Product.find({...keyword}).limit(pageSize).skip(pageSize * (page - 1)).populate('user')
 
 //throw new Error('Error')
-res.json({products, page, pages:Math.ceil(count /pageSize)})
+  res.json({products, page, pages:Math.ceil(count /pageSize)})
 })
 
 
 //get SINGLE products ___ GET /api/product:/ID PUBLIC
 const getProductById = AsyncHandler(async(req, res) => {
-    const product = await Product.findById(req.params.id)
+    const product = await Product.findById(req.params.id).populate('user')
     if(product){
         res.json(product)
     }else{
@@ -33,7 +33,7 @@ const getProductById = AsyncHandler(async(req, res) => {
 })
 //delete SINGLE product ___ DELETE /api/product:/ID PRIVATE/ADMIN
 const deleteProduct = AsyncHandler(async(req, res) => {
-    const product = await Product.findById(req.params.id)
+    const product = await Product.findById(req.params.id).populate('user')
     if(product){
         await product.remove()
         res.json({message: 'product removed'})
@@ -53,7 +53,7 @@ const createProduct = AsyncHandler(async(req, res) => {
         countDown: 0,
         numReviwes: 0,
         description: 'sample desc'
-    })
+    }).populate('user')
     const createdProduct = await product.save()
     res.status(201).json(createdProduct)
 })
@@ -61,7 +61,7 @@ const createProduct = AsyncHandler(async(req, res) => {
 const updateProduct = AsyncHandler(async(req, res) => {
     const {name, bid, category,description,image, brand,countDown} = req.body
 
-    const product = await Product.findById(req.params.id)
+    const product = await Product.findById(req.params.id).populate('user')
 
     if(product){
         product.name = name
@@ -122,13 +122,13 @@ const createProductReview = AsyncHandler(async (req, res) => {
   
 //Get top reated producted ___ PUT /api/products/top PUBLIC
 const getTopProducts = AsyncHandler(async (req, res) => {
-    const products = await Product.find({}).sort({rating: -1}).limit(5)
+    const products = await Product.find({}).sort({rating: -1}).limit(5).populate('user')
     res.json(products)
   })
 
 
 //Make a bid ___ POST /api/products/:id/bid PRIVATE/USER
-const makeBid = AsyncHandler(async (req, res, next) => {
+const makeBid = AsyncHandler(async (req, res) => {
     const bid = {
       user: req.user.id,
       bid: req.body.bid
@@ -145,7 +145,7 @@ const makeBid = AsyncHandler(async (req, res, next) => {
         res.status(404)
         throw new Error('Cannot bid product expired')
     }
-    let maxBid = Math.max(...listing.bids.map(P => P.bid), 0);
+    let maxBid = Math.max(...product.bids.map(P => P.bid), 0);
   
     if (!maxBid) {
         maxBid = product.startPrice
@@ -163,7 +163,7 @@ const makeBid = AsyncHandler(async (req, res, next) => {
   });
   
 //Delete a Bid ___ DELETE/api/products/:product_id/bid/bid_id PRIVATE
-const deleteBid = AsyncHandler(async (req, res, next) => {
+const deleteBid = AsyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.product_id).populate(
         'user'
     )
@@ -173,11 +173,11 @@ const deleteBid = AsyncHandler(async (req, res, next) => {
     const maxBid = Math.max(...product.bids.map(p => p.bid), 0)
     product.currentPrice = maxBid
     const deletedBid = await product.save()
-    res.status(201).json(deleteBid)
+    res.status(201).json(deletedBid)
   });
   
 //End auction ___ POST /api/products/:id PRIVATE
-const endBiding = AsyncHandler(async (req, res, next) => {
+const endBiding = AsyncHandler(async (req, res) => {
     let product = await Product.findById(req.params.id)
     if (product.user.toString() === req.user.id) {
         product.active = false
@@ -191,7 +191,7 @@ const endBiding = AsyncHandler(async (req, res, next) => {
 
 
 //Create an auction by User  POST api/products PRIVATE
-const createAuction = AsyncHandler (async(req, res, next) =>{
+const createAuction = AsyncHandler (async(req, res) =>{
     const Auction = {
         ...req.body,
         user: req.user.id,
@@ -205,9 +205,81 @@ const createAuction = AsyncHandler (async(req, res, next) =>{
         res.status(401)
         throw new Error('fields are required')
     }
-    const newAuction = await Product.create(Auction)
+    let newAuction = await Product.create(Auction)
+    newAuction = await newAuction.populate('user')
     res.status(201).json(newAuction)
 })  
 
 
-export {getProductById, getProducts, deleteProduct, updateProduct, createProduct, createProductReview, getTopProducts, makeBid, endBiding, deleteBid, createAuction}
+
+const getActiveListingsByUser = AsyncHandler(async (req, res) => {
+    const products = await Product.find({
+      user: req.params.user_id,
+      active: true
+    }).populate('user');
+  
+    res.status(200).json({ products });
+  });
+  
+  const getInactiveListingsByUser = AsyncHandler(async (req, res) => {
+    const products = await Product.find({
+      user: req.params.user_id,
+      active: false
+    }).populate('user');
+  
+    res.status(200).json({ products });
+  });
+
+  //update SINGLE product ___ PUT /api/products/:id PRIVATE/ADMIN
+const updateProductUser = AsyncHandler(async(req, res) => {
+  const {name, bid, category,description,image, brand,countDown} = req.body
+
+  const product = await Product.findById(req.params.id).populate('user')
+
+  if(product){
+      product.name = name
+      product.bid = bid
+      product.description = description
+      product.image = image
+      product.brand = brand
+      product.category = category
+      product.countDown = countDown
+      const updatedProduct = await product.save()
+      res.json(updatedProduct)
+  }else{
+      res.status(404)
+      throw new Error ('')
+  }
+ 
+})
+
+const endExpiredProducts = AsyncHandler(async (req, res) => {
+  const products = await Product.find({}).populate('user')
+  products.forEach(async(product) => {
+    await Product.find({}).populate('user')
+    if(product.endDate.getDate()< Date.now()){
+      product.active= false
+      if (product.bids.length > 0) {
+      var winningBid = product.bids.reduce((max,product) => {
+        max.bid > product.bid ? max : product
+      })
+    }
+    }else{ var winningBid = null}
+    winningBid === null ? (product.winner= null ) : (product.winner = winningBid.user)
+    let updatedProduct = await product.save()
+    updatedProduct = await updatedProduct.populate('user')
+      res.status(200).json(updatedProduct)
+  })
+
+})
+
+
+const getUsersWonListings = AsyncHandler(async (req, res) => {
+  const products = await Product.find({
+    winner: req.user.id,
+    active: false
+  }).populate('user');
+  res.status(200).json({ products });
+});
+
+export {getProductById, getProducts, deleteProduct, updateProduct, createProduct, createProductReview, getTopProducts, makeBid, endBiding, deleteBid, createAuction, getActiveListingsByUser, getInactiveListingsByUser, updateProductUser, endExpiredProducts,getUsersWonListings}

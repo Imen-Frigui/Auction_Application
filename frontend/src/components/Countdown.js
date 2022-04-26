@@ -19,8 +19,7 @@ const Countdown = ({ endDate }) => {
   const countdownTimer = () => {
     const countDownDate = Date.parse(endDate);
     // Get today's date and time
-    var now = Date.now();
-
+    var now = Date.now()
     // Find the distance between now and the count down date
     var distance = countDownDate - now;
 

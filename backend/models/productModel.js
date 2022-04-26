@@ -12,7 +12,6 @@ const reviewSchema = mongoose.Schema({
     },
     user:{
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
         ref: 'User'
     },
 },{timestamps:true,})
@@ -20,7 +19,6 @@ const reviewSchema = mongoose.Schema({
 const productSchema = mongoose.Schema({
     user:{
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
         ref: 'User'
     },
     createdAt: {
@@ -51,7 +49,7 @@ const productSchema = mongoose.Schema({
   bids: [
     {
       user: {
-        type: mongoose.Schema.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'user',
         required: true
       },
@@ -96,7 +94,11 @@ const productSchema = mongoose.Schema({
         required: true,
         default: 0
     },
-    active: { type: Boolean, default: true }
+    active: { type: Boolean, default: true },
+    winner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'user'
+    }
 
 },{timestamps:true,})
 

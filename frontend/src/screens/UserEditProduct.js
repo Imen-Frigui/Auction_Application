@@ -5,11 +5,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import FormContainer from '../components/FormContainer'
-import { listProductDetails, updateProduct } from '../actions/productAction'
+import { listProductDetails, userUpdateProduct } from '../actions/productAction'
 import { PRODUCT_UPDATE_RESET } from '../constants/productConstants'
 import axios from 'axios'
 
-const ProductEditScreen = () => {
+const UserEditProduct = () => {
   const { id } = useParams()
   const [name, setName] = useState('')
   const [image, setImage] = useState('')
@@ -17,7 +17,7 @@ const ProductEditScreen = () => {
   const [category, setCategory] = useState('')
   const [countDown, setCountDown] = useState(0)
   const [description, setDescription] = useState(0)
-  const [bid, setBid] = useState(0)
+  const [bid, setBid] = useState('')
   const [uploading, setUploading] = useState(false)
 
 
@@ -36,8 +36,6 @@ const ProductEditScreen = () => {
   useEffect(() => {
    if(successUpdate){
     dispatch({type: PRODUCT_UPDATE_RESET})
-    history('/admin/productlist')
-
    }else{
       if(!product?.name || product?._id !== id){
         dispatch(listProductDetails(id))
@@ -56,7 +54,7 @@ const ProductEditScreen = () => {
 
   const submitHandler =(e) => {
     e.preventDefault()
-    dispatch(updateProduct({_id: id, name,bid, brand, description, category,image, countDown}))
+    dispatch(userUpdateProduct({_id: id, name,bid, brand, description, category,image, countDown}))
   }
 
   const uploadFileHandler = async (e) => {
@@ -84,7 +82,6 @@ const ProductEditScreen = () => {
 
   return (
     <>
-    <Link to ='/admin/productlist' className='btn btn-light my-3'>Go Back</Link>
     <FormContainer>
       <h1>Update Product</h1>
       {loadingUpdate && <Loader/>}
@@ -167,4 +164,4 @@ const ProductEditScreen = () => {
   )
 }
 
-export default ProductEditScreen
+export default UserEditProduct

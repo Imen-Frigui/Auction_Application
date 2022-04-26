@@ -1,4 +1,4 @@
-import {GET_LISTING, PRODUCT_CREATE_FAIL, PRODUCT_CREATE_REQUEST, PRODUCT_CREATE_REVIEW_FAIL, PRODUCT_CREATE_REVIEW_REQUEST, PRODUCT_CREATE_REVIEW_SUCCESS, PRODUCT_CREATE_SUCCESS, PRODUCT_DELETE_FAIL, PRODUCT_DELETE_REQUEST, PRODUCT_DELETE_SUCCESS, PRODUCT_DETAILS_FAIL,
+import {GET_ACTIVE_PRODUCTS_FAIL, GET_ACTIVE_PRODUCTS_REQUEST, GET_ACTIVE_PRODUCTS_SUCCESS, GET_INACTIVE_PRODUCTS_FAIL, GET_INACTIVE_PRODUCTS_REQUEST, GET_INACTIVE_PRODUCTS_SUCCESS, PRODUCT_ADD_BID_FAIL, PRODUCT_ADD_BID_REQUEST, PRODUCT_ADD_BID_SUCCESS, PRODUCT_CREATE_FAIL, PRODUCT_CREATE_REQUEST, PRODUCT_CREATE_REVIEW_FAIL, PRODUCT_CREATE_REVIEW_REQUEST, PRODUCT_CREATE_REVIEW_SUCCESS, PRODUCT_CREATE_SUCCESS, PRODUCT_DELETE_FAIL, PRODUCT_DELETE_REQUEST, PRODUCT_DELETE_SUCCESS, PRODUCT_DETAILS_FAIL,
      PRODUCT_DETAILS_REQUEST, 
       PRODUCT_DETAILS_SUCCESS,
       PRODUCT_LIST_FAIL,
@@ -11,7 +11,6 @@ import {GET_LISTING, PRODUCT_CREATE_FAIL, PRODUCT_CREATE_REQUEST, PRODUCT_CREATE
       PRODUCT_UPDATE_REQUEST,
       PRODUCT_UPDATE_SUCCESS} from '../constants/productConstants'
 import axios from 'axios'
-import {addNotification} from './notification'
 
 export const listProducts = (keyword = '', pageNumber='') => async(dispatch) => {
     try {
@@ -182,31 +181,112 @@ export const createProductReview = (productId, review) => async (
     }
 }
 
-export const makeBid = (bid, productId) => async dispatch => {
+  export const makeBid = (product) => async (dispatch, getState)=> {
     try {
-      const config = {
-        headers: {
-          'Content-Type': 'application/json'
+        dispatch({
+            'Content-Type': 'application/json',
+            type: PRODUCT_ADD_BID_REQUEST
+        })
+
+        const { userLogin: {userInfo} } = getState()
+
+        const config = {
+            headers: {
+                Authorization : `Bearer ${userInfo.token}`,
+            },
         }
-      }
-  
-      const body = {
-        bid
-      }
-  
-      const res = await axios.post(
-        `/api/products/${productId}/bid`,
-        body,
-        config
-      )
-  
-      dispatch({
-        type: PRODUCT_DETAILS_SUCCESS,
-        payload: res.data.product
-      });
-      dispatch(addNotification('Placed bid successfully', 'success'));
-    } catch (err) {
-      console.log(`Error: ${err.response.data.message}`);
-      dispatch(addNotification(err.response.data.message, 'error'));
+      
+          const {data} = await axios.post(
+            `/api/products/${product._id}/bid`,product, config
+          )
+
+        dispatch({
+            type: PRODUCT_ADD_BID_SUCCESS,
+            payload: data
+        })
+
+        
+    }catch (error) {
+        dispatch({
+            type: PRODUCT_ADD_BID_FAIL,
+            payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+        })
     }
-  };
+}
+
+export const userUpdateProduct = (product) => async (dispatch, getState)=> {
+    try {
+        dispatch({
+            'Content-Type': 'application/json',
+            type: PRODUCT_UPDATE_REQUEST
+        })
+
+        const { userLogin: {userInfo} } = getState()
+
+        const config = {
+            headers: {
+                Authorization : `Bearer ${userInfo.token}`,
+            },
+        }
+
+         const {data} = await axios.put(`/api/products/${product._id}`,product , config)
+
+        dispatch({
+            type: PRODUCT_UPDATE_SUCCESS,
+            payload: data
+        })
+
+        
+    }catch (error) {
+        dispatch({
+            type: PRODUCT_UPDATE_FAIL,
+            payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+        })
+    }
+}
+
+export const activeProducts = (keyword = '', pageNumber='') => async(dispatch, getState) => {
+    try {
+        const { userLogin: {userInfo} } = getState()
+
+        const config = {
+            headers: {
+                Authorization : `Bearer ${userInfo.token}`,
+            },
+        }
+        dispatch ({ type: GET_ACTIVE_PRODUCTS_REQUEST})
+        const { data } = await axios.get(`/api/products/${userInfo._id}/active?keyword=${keyword}&pageNumber=${pageNumber}`, config)
+        dispatch({
+            type: GET_ACTIVE_PRODUCTS_SUCCESS,
+            payload: data
+        })
+    }catch(error){
+        dispatch({
+            type: GET_ACTIVE_PRODUCTS_FAIL,
+            payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+        })
+    }
+}
+
+export const inActiveProducts = (keyword = '', pageNumber='') => async(dispatch, getState) => {
+    try {
+        const { userLogin: {userInfo} } = getState()
+
+        const config = {
+            headers: {
+                Authorization : `Bearer ${userInfo.token}`,
+            },
+        }
+        dispatch ({ type: GET_INACTIVE_PRODUCTS_REQUEST})
+        const { data } = await axios.get(`/api/products/${userInfo._id}/inactive?keyword=${keyword}&pageNumber=${pageNumber}`, config)
+        dispatch({
+            type: GET_INACTIVE_PRODUCTS_SUCCESS,
+            payload: data
+        })
+    }catch(error){
+        dispatch({
+            type: GET_INACTIVE_PRODUCTS_FAIL,
+            payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+        })
+    }
+}

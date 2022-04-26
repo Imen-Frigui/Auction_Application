@@ -1,103 +1,89 @@
 import React, {useState, useEffect} from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { Link } from 'react-router-dom'
-import { Form, Row, Col, Image, ListGroup, Card, Button, ListGroupItem, FormControl} from 'react-bootstrap'
+import {Link, useNavigate, useParams } from 'react-router-dom'
+import { Form, Row, Col, Image, ListGroup, Card, Button} from 'react-bootstrap'
 import Rating from '../components/Rating'
 import { useDispatch, useSelector } from 'react-redux'
-import { listProductDetails, createProductReview, listProducts} from '../actions/productAction'
+import { listProductDetails, listProducts, makeBid} from '../actions/productAction'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
-import {PRODUCT_CREATE_REVIEW_RESET} from '../constants/productConstants'
 import Meta from '../components/Meta'
 import Countdown from '../components/Countdown'
 import Product from '../components/Product'
+import Paginate from '../components/Paginate'
+import { PRODUCT_ADD_BID_RESET } from '../constants/productConstants'
 
 
 const ProductScreen = () => {
+ 
     const dispatch = useDispatch()
     const { id } = useParams()
-    const history = useNavigate();
+    const history = useNavigate()
 
-    const[rating, setRating]= useState(0)
-    const[comment, setComment]= useState('')
+
+    const [message, setMessage] = useState(null)
+    const [messageBid, setMessageBid] = useState(null)
+    const [bid, setBid] = useState('')
+
+    const pageNumber = useParams().pageNumber || 1
 
 
     const productDetails = useSelector (state => state.productDetails)
     const {loading, error, product} = productDetails
 
-    const makeBid = useSelector(state => state.makeBid)
+    const bidMake = useSelector(state => state.bidMake)
+    const { loading:loadingBid, error:errorBid, success: successBid } = bidMake
 
     const userLogin = useSelector((state) => state.userLogin)
     const { userInfo } = userLogin
 
 
-    const productReviewCreate = useSelector((state) => state.productReviewCreate)
-    const {
-      success: successProductReview,
-      loading: loadingProductReview,
-      error: errorProductReview,
-    } = productReviewCreate
-
     const productList = useSelector(state => state.productList)
-    const { products, page, pages  } = productList
+    const { products, pages, page } = productList
 
     useEffect(() => {
+
         dispatch(listProductDetails(id))
-        dispatch(listProducts())
-
-      }, [dispatch, id])
-
-    /*const addHandler = () => {
-        history(`/myposts/${id}`)
-    }
-
-    const submitHandler = (e) => {
-        e.preventDefault()
-        dispatch(
-          createProductReview(id, {
-            rating,
-            comment,
-          })
-        )
-      }*/
-      const [uploading, setUploading] = useState(false);
-
-      const [formData, setFormData] = useState({
-        bid: ''
-      });
-    
-      const { bid } = formData;
-    
-      const onChange = e =>
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    
-      const onSubmit = async e => {
-        e.preventDefault();
-        setUploading(true);
-        if (bid * 100 > product.currentPrice + product.minIncrement) {
-          await makeBid(bid, product._id);
-        } else {
-          console.log("Bid isn't big enough");
+        dispatch(listProducts('', pageNumber))
+        if(successBid){
+          dispatch({type: PRODUCT_ADD_BID_RESET})
+          setMessageBid('Bid made')
         }
-        setUploading(false);
-        setFormData({ bid: '' });
-      };
-  
+      }, [dispatch, id, successBid, pageNumber])
 
+
+      const submitHandler =(e) => {
+        if(!userInfo) {
+          history('/login')
+        }else{
+          e.preventDefault()
+          if (bid  > product.currentPrice + product.minIncrement) {
+            dispatch(makeBid({bid, _id: product._id}))
+          }else{
+            setMessage("Bid isn't big enough")
+        }
+      }
+      }
+        
+          
     return (
     <>
-
         <Link className='btn btn-dark my-3' to='/'>more</Link>
-        {loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message> 
-        : (
+        {errorBid && <Message variant='danger'>{error}</Message>}
+        {message && <Message variant='danger'>{message}</Message>}
+        {messageBid && <Message variant='success'>{messageBid}</Message>}
+        {successBid && <Message variant='success'>Bid aded</Message>}
+        {loadingBid && <Loader/>}
+        {loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message>
+        : (        
+        
             <>
             <Meta title={product.name} />
             <Row>
             <Col md={4} >
-                <Link className='link' to={`/profile/`}>
-                       <h5>Listing created by</h5> <h6>{/*product.user.name*/}</h6>
-                </Link>
-                <Image className='border border-primary' src={product.image} alt={product.name} fluid/>
+              <Row><Link className='link' to={`/profile/${product.user?._id}`}>
+                  <h6>Auction created by</h6><i>{product.user?.name}</i>
+                </Link></Row>
+                <Row><Image className='border border-primary' src={product.image} alt={product.name}/></Row>
             </Col>
             <Col md={3}>
                 <ListGroup variant='flush'>
@@ -105,12 +91,12 @@ const ProductScreen = () => {
                         <h2>{product.name}</h2>
                     </ListGroup.Item>
                     <ListGroup.Item>
-                        <Rating value={product.rating} text ={`${product.numReviews} reviews`} />
+                        <Rating value={product.rating} color='#f8e825' text ={`${product.numReviews} reviews`} />
                     </ListGroup.Item>
                     <ListGroup.Item>
-                        Description: <h3>{product.description}</h3> {product.description
-              ? product.description
-              : 'The seller has not provided a description for this item'}
+                        <strong>Description</strong>: {product.description
+              ? <h4>{product.description}</h4>
+              : <h4>The seller has not provided a description for this item</h4>}
                     </ListGroup.Item>
                 </ListGroup>
             </Col>
@@ -119,59 +105,78 @@ const ProductScreen = () => {
                     <ListGroup variant='flush'>
                         <ListGroup.Item>
                           <Row>
-                            <Col>startPrice:</Col>
+                            <Col><strong>Created At</strong></Col>
+                            <Col>{product.createdAt}</Col>
+                          </Row>
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                          <Row>
+                            <Col><strong>Condition</strong></Col>
+                            <Col>{product.condition}</Col>
+                          </Row>
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                          <Row>
+                            <Col><strong>Starting Price:</strong></Col>
                             <Col>{product.startPrice}</Col>
                           </Row>
                         </ListGroup.Item>
                         <ListGroup.Item>
-                        <Row>
-                            <Col>
-                              Current Price:
-                            </Col>
-                            <Col>
-                              <strong>{product.currentPrice} DT</strong>
-                            </Col>
+                          <Row>
+                            <Col><strong> Current Price:</strong></Col>
+                            <Col>{`${product.currentPrice} `}DT</Col>
                         </Row>  
                     </ListGroup.Item>
                     <ListGroup.Item>
-                        <Row>
-                            <Col>Finshing Date</Col>
-                            <Col>Time Left: <Countdown endDate={product.endDate} /></Col>
-                        </Row>
+                      <Row>
+                         <Col><strong>Finshing Date</strong></Col>
+                          <Col>{product.endDate}</Col>
+                      </Row>
                     </ListGroup.Item>
+                    {product.active ?(<ListGroup.Item>
+                        <Row>
+                          <Col><strong>Time Left:</strong></Col>
+                          <Col><Countdown endDate={product.endDate} /></Col>
+                        </Row>
+                    </ListGroup.Item>):(<></>)}
                     <ListGroup.Item>
                         <Row>
-                            <Col>State of activness</Col>
-                            <Col>{!product.active ? <>Biding ended</> : <>Biding active</>}</Col>
+                            <Col><strong>State of activness</strong></Col>
+                            <Col>{!product.active ? <h6 className='text-danger'>Biding ended</h6> : <h6 className='text-success'>active</h6>}</Col>
                         </Row>
                     </ListGroup.Item>
                     <ListGroup.Item>
                         <Row>
                             <Col>
-                            <Form md={4} className=''  onSubmit={e => onSubmit(e)}>
+                            {product.winner ?(!product.active && (<Link to={`/profile/${product.winner?._id}`}><h1>the winner is :</h1><h2>{product.winner}</h2></Link>))
+                            :(<Form md={4} className=''  onSubmit={submitHandler}>
                               <Form.Group  controlId='bid-form-group'>
+                                {`to participate in the auction you must add ${product.minIncrement} to the Current Price `}
                                 <Form.Control
+                                  className='btn-block'
                                   type='number'
                                   placeholder={`Enter bid higher than ${product.currentPrice + product.minIncrement}`}
                                   name='bid'
-                                  value={bid}
-                                  step='0.01'
-                                  onChange={e => onChange(e)}
+                                  step='10'
+                                  value={bid} onChange={(e) => setBid(e.target.value)}
                                   disabled={!product.active}
-                                  required
                                 />
-                              
                                 <Button 
                                   type='submit'
-                                  className='btn btn-primary'
-                                  value={uploading ? 'Placing..' : 'Place bid'}
+                                  className='btn-block'
                                   disabled={!product.active}
                                 >BID</Button>
                               </Form.Group>
-                            </Form>
+                            </Form>)}
                             </Col>
                         </Row>
                       </ListGroup.Item>
+                      {userInfo ? (userInfo._id === product.user &&(<ListGroup.Item>
+                        <Row>
+                          <Col><Link className='btn btn-block bg-info' to={`/product/${product._id}/edit`}>EDIT</Link></Col>
+                        </Row>
+                      </ListGroup.Item>)): (<></>)}
+                    {userInfo && (userInfo._id !== product.user &&(
                       <ListGroup.Item>     
                         <Row>
                           <Col>
@@ -182,10 +187,12 @@ const ProductScreen = () => {
                           </Col>
                         </Row>
                       </ListGroup.Item> 
+                      ))}
                     </ListGroup>
             </Card>
             </Col>
         </Row>
+
       {/* <Row>
             <Col md={6}>
               {product.reviews.length === 0 && <Message>No Reviews</Message>}
@@ -252,19 +259,13 @@ const ProductScreen = () => {
               </ListGroup>
             </Col>
                   </Row>*/}
+                 
         </>
         )}
-        {/*userInfo.isAuthenticated && userInfo._id !== product.user._id && (<h1>report</h1>)*/}
-      
-            {/* userInfo._id === product.user._id && (
-              <Link //to={`/product/${product.id}/edit`}
-              >
-                <h4>EDIT</h4>
-              </Link>
-            )*/}
+
           
-        
           <h2 className='large-heading'>More Items to consider</h2>
+          <>
           <Row>
           {products.map(product => (
             <React.Fragment key={product._id}>
@@ -274,6 +275,7 @@ const ProductScreen = () => {
             </React.Fragment>
           ))}
         </Row>
+        <Paginate pages={pages} page={page}/></>
     </> 
     )
 }

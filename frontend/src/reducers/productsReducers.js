@@ -1,4 +1,4 @@
-import { CLEAR_LISTING, DELETE_BID, GET_LISTING, LISTING_ERROR, PRODUCT_CREATE_FAIL, PRODUCT_CREATE_REQUEST, PRODUCT_CREATE_RESET, PRODUCT_CREATE_REVIEW_FAIL, PRODUCT_CREATE_REVIEW_REQUEST, PRODUCT_CREATE_REVIEW_RESET, PRODUCT_CREATE_REVIEW_SUCCESS, PRODUCT_CREATE_SUCCESS, PRODUCT_DELETE_FAIL, PRODUCT_DELETE_REQUEST, PRODUCT_DELETE_SUCCESS, PRODUCT_DETAILS_FAIL, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_TOP_FAIL, PRODUCT_TOP_REQUEST, PRODUCT_TOP_SUCCESS, PRODUCT_UPDATE_FAIL, PRODUCT_UPDATE_REQUEST, PRODUCT_UPDATE_RESET, PRODUCT_UPDATE_SUCCESS } from '../constants/productConstants'
+import {GET_ACTIVE_PRODUCTS_FAIL, GET_ACTIVE_PRODUCTS_REQUEST, GET_ACTIVE_PRODUCTS_RESET, GET_ACTIVE_PRODUCTS_SUCCESS, GET_INACTIVE_PRODUCTS_FAIL, GET_INACTIVE_PRODUCTS_REQUEST, GET_INACTIVE_PRODUCTS_RESET, GET_INACTIVE_PRODUCTS_SUCCESS, PRODUCT_ADD_BID_FAIL, PRODUCT_ADD_BID_REQUEST, PRODUCT_ADD_BID_RESET, PRODUCT_ADD_BID_SUCCESS, PRODUCT_CREATE_FAIL, PRODUCT_CREATE_REQUEST, PRODUCT_CREATE_RESET, PRODUCT_CREATE_REVIEW_FAIL, PRODUCT_CREATE_REVIEW_REQUEST, PRODUCT_CREATE_REVIEW_RESET, PRODUCT_CREATE_REVIEW_SUCCESS, PRODUCT_CREATE_SUCCESS, PRODUCT_DELETE_FAIL, PRODUCT_DELETE_REQUEST, PRODUCT_DELETE_SUCCESS, PRODUCT_DETAILS_FAIL, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_TOP_FAIL, PRODUCT_TOP_REQUEST, PRODUCT_TOP_SUCCESS, PRODUCT_UPDATE_FAIL, PRODUCT_UPDATE_REQUEST, PRODUCT_UPDATE_RESET, PRODUCT_UPDATE_SUCCESS } from '../constants/productConstants'
   
   export const productListReducer = (state = { products: [] }, action) => {
     switch (action.type) {
@@ -116,10 +116,72 @@ import { CLEAR_LISTING, DELETE_BID, GET_LISTING, LISTING_ERROR, PRODUCT_CREATE_F
 
   export const makeBidReducer = (state = {product: {}}, action) => {
     switch (action.type) {
-      case PRODUCT_DETAILS_SUCCESS:
+      case PRODUCT_ADD_BID_REQUEST:
+        return { loading: true }
+      case PRODUCT_ADD_BID_SUCCESS:
         return { loading: false,success:true, product: action.payload}
-      case PRODUCT_DETAILS_FAIL:
+      case PRODUCT_ADD_BID_FAIL:
         return { loading: false, error: action.payload }
+      case PRODUCT_ADD_BID_RESET:
+        return {product:{}}
+      default:
+        return state
+    }
+  }
+
+  export const userUpdateProductReducer = (
+    state = { product:{} },
+    action
+  ) => {
+    switch (action.type) {
+      case PRODUCT_UPDATE_REQUEST:
+        return { loading: true }
+      case PRODUCT_UPDATE_SUCCESS:
+        return { loading: false, success:true, product:action.payload }
+      case PRODUCT_UPDATE_FAIL:
+       return { loading: false, error: action.payload }
+      case PRODUCT_UPDATE_RESET:
+        return {product:{}}
+       default:
+        return state
+    }
+  }
+
+  export const activeProductsReducer = (state = { products: [] }, action) => {
+    switch (action.type) {
+      case GET_ACTIVE_PRODUCTS_REQUEST:
+        return { loading: true, products: [] }
+      case GET_ACTIVE_PRODUCTS_SUCCESS:
+        return {
+          loading: false,
+          products: action.payload.products,
+          pages: action.payload.pages,
+          page:action.payload.page
+        }
+      case GET_ACTIVE_PRODUCTS_FAIL:
+        return { loading: false, error: action.payload }
+      case GET_ACTIVE_PRODUCTS_RESET:
+        return {product:{}}
+      default:
+        return state
+    }
+  }
+
+  export const inActiveProductsReducer = (state = { products: [] }, action) => {
+    switch (action.type) {
+      case GET_INACTIVE_PRODUCTS_REQUEST:
+        return { loading: true, products: [] }
+      case GET_INACTIVE_PRODUCTS_SUCCESS:
+        return {
+          loading: false,
+          products: action.payload.products,
+          pages: action.payload.pages,
+          page:action.payload.page
+        }
+      case GET_INACTIVE_PRODUCTS_FAIL:
+        return { loading: false, error: action.payload }
+      case GET_INACTIVE_PRODUCTS_RESET:
+        return {product:{}}
       default:
         return state
     }
