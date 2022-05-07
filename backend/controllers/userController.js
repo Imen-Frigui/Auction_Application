@@ -1,6 +1,7 @@
 import AsyncHandler from 'express-async-handler'
 import User from '../models/userModel.js'
 import genrateToken from '../utils/genrateToken.js'
+import Strategy from 'passport-local'
 
 //auth User & getoken ___ GET /api/users/public PUBLIC
 const authUser = AsyncHandler(async(req, res) => {
@@ -144,4 +145,11 @@ const updateUser = AsyncHandler(async (req, res) => {
       throw new Error('User not found')
     }
   })
-export { authUser, getUserProfile, registerUser, updateUserProfile, getUsers, deleteUser, getUserById, updateUser}
+
+
+ 
+  
+
+
+  
+export { authUser, getUserProfile, registerUser, updateUserProfile, getUsers, deleteUser, getUserById, updateUser,}

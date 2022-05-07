@@ -48,7 +48,7 @@ const ProductScreen = () => {
           dispatch({type: PRODUCT_ADD_BID_RESET})
           setMessageBid('Bid made')
         }
-      }, [dispatch, id, successBid, pageNumber])
+      }, [dispatch, id, successBid, pageNumber, Countdown])
 
 
       const submitHandler =(e) => {
@@ -83,7 +83,7 @@ const ProductScreen = () => {
               <Row><Link className='link' to={`/profile/${product.user?._id}`}>
                   <h6>Auction created by</h6><i>{product.user?.name}</i>
                 </Link></Row>
-                <Row><Image className='border border-primary' src={product.image} alt={product.name}/></Row>
+                <Row><Image className='border border-primary' src={product.image} alt={product.name} fluid /></Row>
             </Col>
             <Col md={3}>
                 <ListGroup variant='flush'>
