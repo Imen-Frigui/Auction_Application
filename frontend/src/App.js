@@ -13,6 +13,7 @@ import UserEditScreen from './screens/UserEditScreen'
 import ProductListScreen from './screens/ProductListScreen'
 import ProductEditScreen from './screens/ProductEditScreen'
 import UserEditProduct from './screens/UserEditProduct'
+import ProfileUserScreen from "./screens/ProfileUserScreen"
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path='/login' element={<LoginScreen/>} />
         <Route path='/register' element={<RegisterScreen/>} />
         <Route path='/profile' element={<ProfileScreen/>} />
+        <Route path='/profile/:id' element={<ProfileUserScreen/>} />
         <Route path='/post/:id' element={<ProductScreen/>} />
         <Route path='/myposts' />
         <Route path='/admin/userlist' element={<UserListScreen/>} />
@@ -33,9 +35,7 @@ function App() {
         <Route exact path='/admin/productlist' element={<ProductListScreen/>} />
         <Route exact path='/admin/productlist/:pageNumber' element={<ProductListScreen/>} />
         <Route path='/admin/product/:id/edit' element={<ProductEditScreen/>} />
-
         <Route path='/product/:id/edit' element={<UserEditProduct/>} />
-
         <Route exact path='/search/:keyword' element={<HomeScreen/>}/>
         <Route path='/search/:keyword/page/:pageNumber' element={<HomeScreen/>}/>
         <Route path='/page/:pageNumber' element={<HomeScreen/>}/>

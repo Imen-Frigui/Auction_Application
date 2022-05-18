@@ -89,11 +89,6 @@ const productSchema = mongoose.Schema({
         required: true,
         default: 0
     },
-    numReviews:{
-        type: Number,
-        required: true,
-        default: 0
-    },
     active: { type: Boolean, default: true },
     winner: {
       type: mongoose.Schema.Types.ObjectId,

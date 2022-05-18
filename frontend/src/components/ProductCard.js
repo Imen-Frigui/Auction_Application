@@ -33,7 +33,6 @@ const ProductCard = ({ product }) => {
                     </ListGroup.Item>
                     <ListGroup.Item>
                         <Row>
-                            <Col><Rating value={product.rating} text ={`${product.numReviews} reviews`} color='#f8e825' /></Col>
                             {product.active &&(<Col className='col-md-2 text-success'><strong>ACTIVE</strong></Col>)}
                             {!product.active &&(<Col className='col-md-3 text-danger'><strong>IN-ACTIVE</strong></Col>)}
                         </Row>

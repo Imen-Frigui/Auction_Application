@@ -166,7 +166,7 @@ const ProfileScreen = () => {
             </Button>
           </Col>
         </Row>
-           <Tabs defaultActiveKey="active" id="profile-tab" className='mb-3' >
+           <Tabs id="profile-tab" className='mb-3' >
             <Tab eventKey="active" title="Active Bids">
               {loadingActive ? <Loader>loading..</Loader> : errorActive ? ( <Message variant='danger' >{errorActive}</Message> ) : (
              <>

@@ -41,15 +41,14 @@ const ProductScreen = () => {
     const { products, pages, page } = productList
 
     useEffect(() => {
-
         dispatch(listProductDetails(id))
         dispatch(listProducts('', pageNumber))
         if(successBid){
           dispatch({type: PRODUCT_ADD_BID_RESET})
           setMessageBid('Bid made')
         }
-      }, [dispatch, id, successBid, pageNumber, Countdown])
-
+      }, [dispatch, id, successBid, pageNumber,errorBid, Countdown])
+        
 
       const submitHandler =(e) => {
         if(!userInfo) {
@@ -89,9 +88,6 @@ const ProductScreen = () => {
                 <ListGroup variant='flush'>
                     <ListGroup.Item>
                         <h2>{product.name}</h2>
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                        <Rating value={product.rating} color='#f8e825' text ={`${product.numReviews} reviews`} />
                     </ListGroup.Item>
                     <ListGroup.Item>
                         <strong>Description</strong>: {product.description

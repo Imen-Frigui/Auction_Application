@@ -3,7 +3,7 @@ import Product from '../models/productModel.js'
 
 //get all products ___ GET /api/products PUBLIC
 const getProducts = AsyncHandler(async(req, res) => {
-    const pageSize = 5
+    const pageSize = 12
     const page = Number(req.query.pageNumber) || 1
   
     const keyword = req.query.keyword ?{
@@ -97,7 +97,6 @@ const createProductReview = AsyncHandler(async (req, res) => {
         res.status(400)
         throw new Error('Product already reviewed')
       }
-  
       const review = {
         name: req.user.name,
         rating: Number(rating),
@@ -253,8 +252,8 @@ const updateProductUser = AsyncHandler(async(req, res) => {
  
 })
 
-const endExpiredProducts = AsyncHandler(async (req, res) => {
-  const products = await Product.find({}).populate('user')
+/*const endExpiredProducts = AsyncHandler(async (req, res) => {
+  let products = await Product.find({}).populate('user')
   products.forEach(async(product) => {
     await Product.find({}).populate('user')
     if(product.endDate.getDate()< Date.now()){
@@ -265,13 +264,63 @@ const endExpiredProducts = AsyncHandler(async (req, res) => {
       })
     }
     }else{ var winningBid = null}
-    winningBid === null ? (product.winner= null ) : (product.winner = winningBid.user)
-    let updatedProduct = await product.save()
-    updatedProduct = await updatedProduct.populate('user')
-      res.status(200).json(updatedProduct)
+    winningBid === null ? (winner= null ) : (winner = winningBid.user)
+    await Product.updateOne({ _id: product._id },
+      { $set: { active: false, winner: winner } })
+    
+    //let updatedProduct = await product.save()
+    //updatedProduct = await updatedProduct.populate('user')
+      //res.status(200).json(updatedProduct)
   })
+   products = products.filter(product => product.active);
+   res.status(200).json(products);
+})*/
 
+
+/*const endExpiredProducts = AsyncHandler(async (req, res) => {
+  const products = await Product.find({}).populate('user')
+  let {winner} = req.body
+  for (let product in products){
+    if(product.endDate< Date.now()){
+      product.active= false
+      if (product.bids.length > 0) {
+      var winningBid = product.bids.reduce((max,product) => {
+        max.bid > product.bid ? max : product
+      })
+    }
+    }else{ var winningBid = null}
+    winningBid === null ? (product.winner= null ) : (product.winner = winningBid.user)
+    product.winner = winner
+    const updatedProduct = await product.save()
+    res.json(updatedProduct)
+    
+    //let updatedProduct = await product.save()
+    //updatedProduct = await updatedProduct.populate('user')
+      //res.status(200).json(updatedProduct)
+  }
+
+})*/
+
+const endExpiredProducts = AsyncHandler(async (req, res) => {
+  let products = await Product.find({}).populate('user')
+  products.forEach(async(product) => {
+    //await Product.find({}).populate('user')
+    if(product.endDate.getTime()< Date.now()){
+      product.active= false
+      if (product.bids.length > 0) {
+      var winningBid = product.bids.reduce((max,product) => {
+        max?.bid > product.bid ? max : product
+      })
+    }
+    }else{ product.active= true
+       var winningBid = null}
+    winningBid === null ? (product.winner= null ) : (product.winner = winningBid?.user)
+    await product.save()
+  })
+  products = products.filter(product => product.active);
+  res.status(200).json(products);
 })
+
 
 
 const getUsersWonListings = AsyncHandler(async (req, res) => {
