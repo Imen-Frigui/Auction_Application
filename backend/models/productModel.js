@@ -50,7 +50,7 @@ const productSchema = mongoose.Schema({
     {
       user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'user',
+        ref: 'User',
         required: true
       },
       bid: {
@@ -69,30 +69,19 @@ const productSchema = mongoose.Schema({
     },
     image:{
         type: String,
-        required: false,
-    },
-    brand:{
-        type: String,
-        required: true
-    },
-    category:{
-        type: String,
-        required: true,
     },
     description:{
         type: String,
-        required: true,
-    },
-    reviwes:[reviewSchema],
-    rating:{
-        type: Number,
-        required: true,
-        default: 0
     },
     active: { type: Boolean, default: true },
     winner: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'user'
+      ref: 'User'
+    },
+    category:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref:'Category',
+      required:true
     }
 
 },{timestamps:true,})

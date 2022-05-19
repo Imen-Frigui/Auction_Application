@@ -10,6 +10,9 @@ import Paginate from '../components/Paginate'
 import ProductCarousel from '../components/ProductCarousel'
 import Meta from '../components/Meta'
 import { Link } from 'react-router-dom'
+import Explore from '../components/Explore'
+
+
 //sm =small screen sm ls xl
 
 const HomeScreen = () => {
@@ -20,6 +23,7 @@ const HomeScreen = () => {
   const pageNumber = params.pageNumber || 1
 
   const dispatch = useDispatch()
+  
   const productList = useSelector(state => state.productList)
   const { loading, error, products, page, pages } = productList
 
@@ -31,6 +35,7 @@ const HomeScreen = () => {
   <>
   <Meta />
   {!keyword ? <ProductCarousel /> : <Link to='/' className='btn btn-dark'>go back</Link>}
+    <Explore className='explore'/>
         <h1>Latest Postes</h1>
         {loading ? <Loader>loading..</Loader> : error ? ( <Message variant='danger' >{error}</Message> ) : 
         ( 

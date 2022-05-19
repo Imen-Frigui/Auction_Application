@@ -1,5 +1,5 @@
 import express from 'express'
-import { getProductById, getProducts, deleteProduct, updateProduct, createProduct, createProductReview, getTopProducts, makeBid, endBiding, deleteBid, createAuction, getActiveListingsByUser, getInactiveListingsByUser, updateProductUser, endExpiredProducts} from '../controllers/productController.js'
+import { getProductById, getProducts, deleteProduct, updateProduct, createProduct, createProductReview, getTopProducts, makeBid, endBiding, deleteBid, createAuction, getActiveListingsByUser, getInactiveListingsByUser, updateProductUser, endExpiredProducts, searchByQueryType} from '../controllers/productController.js'
 import {protect, admin} from '../middleware/authMiddleware.js'
 
 const router = express.Router()
@@ -9,6 +9,8 @@ router.route('/').post(protect, createAuction).get(getProducts,endExpiredProduct
 router.route('/p').get(endExpiredProducts)
 //router.route('/end').get(endExpiredProducts)
 router.route('/:id/reviews').post(protect,createProductReview)
+
+router.post('/search', searchByQueryType)
 
 router.get('/top', getTopProducts)
 

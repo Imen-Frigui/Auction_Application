@@ -16,7 +16,7 @@ const ProductEditScreen = () => {
   const [brand, setBrand] = useState('')
   const [category, setCategory] = useState('')
   const [countDown, setCountDown] = useState(0)
-  const [description, setDescription] = useState(0)
+  const [description, setDescription] = useState('')
   const [bid, setBid] = useState(0)
   const [uploading, setUploading] = useState(false)
 

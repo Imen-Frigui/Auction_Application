@@ -40,6 +40,7 @@ const ProductScreen = () => {
     const productList = useSelector(state => state.productList)
     const { products, pages, page } = productList
 
+
     useEffect(() => {
         dispatch(listProductDetails(id))
         dispatch(listProducts('', pageNumber))

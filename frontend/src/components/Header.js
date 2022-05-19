@@ -4,7 +4,6 @@ import{ Navbar, Nav, Container, NavDropdown} from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../actions/userAction'
 import SearchBox from '../components/SearchBox'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 
 //change navbarclor by <Navbar class=".nav-bar" then edit it in index.css
@@ -56,8 +55,8 @@ const Header = () => {
                             <LinkContainer to='/admin/productlist'>
                               <NavDropdown.Item>Products</NavDropdown.Item>
                             </LinkContainer>
-                            <LinkContainer to='/admin/reportlist'>
-                              <NavDropdown.Item>Reports</NavDropdown.Item>
+                            <LinkContainer to='/admin/categorylist'>
+                              <NavDropdown.Item>Category</NavDropdown.Item>
                             </LinkContainer>
                           </NavDropdown>
                         ) }

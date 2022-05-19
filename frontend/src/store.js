@@ -3,6 +3,7 @@ import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import {productListReducer, productDetailsReducer, productDeleteReducer, productCreateReducer, productUpdateReducer, productReviewCreateReducer, productTopRatedReducer, makeBidReducer, userUpdateProductReducer, activeProductsReducer, inActiveProductsReducer} from './reducers/productsReducers'
 import{userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer, userListReducer, userDeleteReducer, userUpdateReducer}from './reducers/userReducers'
+import{ categoryCreateReducer, categoryDeleteReducer, categoryListReducer, categoryUpdateReducer, categoryDetailsReducer, getProductsByFilterReducer} from './reducers/categoryReducer'
 
 const reducer = combineReducers({
     productList: productListReducer,
@@ -17,6 +18,12 @@ const reducer = combineReducers({
     productDelete: productDeleteReducer,
     productCreate: productCreateReducer,
     productUpdate: productUpdateReducer,
+    categoryDetails: categoryDetailsReducer,
+    categoryList: categoryListReducer,
+    categoryCreate: categoryCreateReducer,
+    categoryDelete: categoryDeleteReducer,
+    categoryUpdate: categoryUpdateReducer,
+    getProductsByFilter: getProductsByFilterReducer,
     productReviewCreate: productReviewCreateReducer,
     productTopRated:productTopRatedReducer,
     bidMake:makeBidReducer,

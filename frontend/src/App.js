@@ -14,6 +14,8 @@ import ProductListScreen from './screens/ProductListScreen'
 import ProductEditScreen from './screens/ProductEditScreen'
 import UserEditProduct from './screens/UserEditProduct'
 import ProfileUserScreen from "./screens/ProfileUserScreen"
+import CategoryListScreen from './screens/CategoryListScreen'
+import CategoryEditScreen from './screens/CategoryEditScreen'
 
 function App() {
   return (
@@ -29,25 +31,30 @@ function App() {
         <Route path='/profile/:id' element={<ProfileUserScreen/>} />
         <Route path='/post/:id' element={<ProductScreen/>} />
         <Route path='/myposts' />
+        
         <Route path='/admin/userlist' element={<UserListScreen/>} />
         <Route path='/admin/user/:id/edit' element={<UserEditScreen/>} />
         <Route path='/user/:id/edit' element={<UserEditScreen/>} />
+        
         <Route exact path='/admin/productlist' element={<ProductListScreen/>} />
         <Route exact path='/admin/productlist/:pageNumber' element={<ProductListScreen/>} />
         <Route path='/admin/product/:id/edit' element={<ProductEditScreen/>} />
+        
+        <Route exact path='/admin/categorylist' element={<CategoryListScreen/>} />
+        <Route exact path='/admin/categorylist/:pageNumber' element={<CategoryListScreen/>} />
+        <Route path='/admin/category/:id/edit' element={<CategoryEditScreen/>} />
+
         <Route path='/product/:id/edit' element={<UserEditProduct/>} />
+        
         <Route exact path='/search/:keyword' element={<HomeScreen/>}/>
         <Route path='/search/:keyword/page/:pageNumber' element={<HomeScreen/>}/>
         <Route path='/page/:pageNumber' element={<HomeScreen/>}/>
         <Route exact path='/' element={<HomeScreen/>}/>
-
-
       </Routes>
       </main>
       </Container>
     <Footer/>
     </BrowserRouter>
-    
   );
 }
 

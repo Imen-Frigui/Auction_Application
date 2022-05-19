@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Row, Col, Tabs, Tab, Toast, ListGroup, ListGroupItem } from 'react-bootstrap'
+import { Row, Col, Tabs, Tab, ListGroup } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
@@ -47,7 +47,7 @@ const ProfileUserScreen = () => {
             dispatch(getUserDetails(id))
         }
     }
-  }, [dispatch, history, userInfo, user , pageNumber])
+  }, [dispatch, history, userInfo, user , pageNumber, id])
 
   
   return (
