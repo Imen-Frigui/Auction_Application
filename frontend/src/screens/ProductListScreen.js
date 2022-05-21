@@ -92,7 +92,7 @@ const ProductListScreen = () => {
                 <td>{product._id}</td>
                 <td>{product.name}</td>
                 <td>{product.bid}</td>
-                <td>{product.category}</td>
+                <td>{product.category?.name}</td>
                 <td>{product.brand}</td>
                 <td>
                   <LinkContainer to={`/admin/product/${product._id}/edit`}>

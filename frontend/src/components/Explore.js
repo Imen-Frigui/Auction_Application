@@ -50,8 +50,8 @@ const Explore = () => {
         <div className="py-3 px-5">
             <Row>
                 {categories.map((category) =>{return(
-                    <Col>
-                        <div key={category._id}>
+                    <Col  key={category._id}>
+                        <div>
                             <Row>
                                 <Image style={{width:'40px', height:'40px', marginLeft:'1px', opacity: '80%'}} src={category.icon}fluid />
                             </Row>

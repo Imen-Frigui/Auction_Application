@@ -26,7 +26,7 @@ const ProductCard = ({ product }) => {
                     <ListGroup.Item>
                       <Row>
                             <Col><strong>Finshing Date</strong></Col>
-                            <Col>{product.endDate}</Col>
+                            <Col>{product.endDate.substring(0, 10)}</Col>
                             <Col><strong>Time Left:</strong></Col>
                             <Col><Countdown endDate={product.endDate} /></Col>
                       </Row>

@@ -158,4 +158,4 @@ const updateUser = AsyncHandler(async (req, res) => {
 
 
   
-export { profile,authUser, getUserProfile, registerUser, updateUserProfile, getUsers, deleteUser, getUserById, updateUser,}
+export { profile,authUser, getUserProfile, registerUser, updateUserProfile, getUsers, deleteUser, getUserById, updateUser}

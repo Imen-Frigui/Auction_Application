@@ -145,7 +145,7 @@ const ProductScreen = () => {
                     <ListGroup.Item>
                         <Row>
                             <Col>
-                            {product.winner ?(!product.active && (<Link to={`/profile/${product.winner?._id}`}><h1>the winner is :</h1><h2>{product.winner}</h2></Link>))
+                            {product.winner ?(!product.active && (<Link to={`/profile/${product.winner}`}><h1>go to winner profile :</h1><h2>{product.winner?.name}</h2></Link>))
                             :(<Form md={4} className=''  onSubmit={submitHandler}>
                               <Form.Group  controlId='bid-form-group'>
                                 {`to participate in the auction you must add ${product.minIncrement} to the Current Price `}

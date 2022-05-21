@@ -56,7 +56,7 @@ const createProduct = AsyncHandler(async(req, res) => {
         description: 'sample desc',
         startPrice:0,
         condition:''
-    }).populate('user', 'category')
+    }).populate('user').populate('category')
     const createdProduct = await product.save()
     res.status(201).json(createdProduct)
 })
@@ -192,12 +192,14 @@ const endBiding = AsyncHandler(async (req, res) => {
 
 //Create an auction by User  POST api/products PRIVATE
 const createAuction = AsyncHandler (async(req, res) =>{
-  const category = Category.findById(req.body.category)  
-  const Auction = {
+  const category = Category.findById(req.body.category) 
+  if(!category) return res.json('Invalid category')
+  const Auction = new Product({
         ...req.body,
         user: req.user.id,
+        category: '62855e279cf49cda264302d9',
         startPrice:req.body.startPrice,
-        minIncrement: req.body.minIncrement}
+        minIncrement: req.body.minIncrement})
     if(Auction.minIncrement % 1 !==0 && !!Auction.minIncrement && Auction.startPrice % 1 !==0 && !!Auction.startPrice)    {
         res.status(400)
         throw new Error('Money fields are required')
@@ -369,5 +371,6 @@ const getProdutsByUser = AsyncHandler(async (req, res) => {
 
   res.status(200).json({ products })
 })
+
 
 export {getProductById, getProducts, deleteProduct, updateProduct, createProduct, createProductReview, getTopProducts, makeBid, endBiding, deleteBid, createAuction, getActiveListingsByUser, getInactiveListingsByUser, updateProductUser, endExpiredProducts,getUsersWonListings, searchByQueryType, getProdutsByUser}

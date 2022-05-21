@@ -5,14 +5,15 @@ import {protect, admin} from '../middleware/authMiddleware.js'
 const router = express.Router()
 
 //get all products ___ GET /api/products PUBLIC
-router.route('/').post(protect, createAuction).get(endExpiredProducts,getProducts)
+router.route('/').post(protect, createAuction).get(getProducts,endExpiredProducts)
 router.route('/p').get(endExpiredProducts)
+router.get('/top', getTopProducts)
 //router.route('/end').get(endExpiredProducts)
 router.route('/:id/reviews').post(protect,createProductReview)
 
 router.post('/search', searchByQueryType)
 
-router.get('/top', getTopProducts)
+
 
 //get SINGLE products ___ GET /api/product:/ID PUBLIC
 

@@ -1,8 +1,11 @@
 import express from 'express'
-import { createReview, getReviewById, getReviewsForUserId, getReviewsWrittenByUserId } from '../controllers/reviewController.js'
+import { createReview, deleteReview, getReviewById, getReviewsForUserId, getReviewsWrittenByUserId, markReviewAsHelpful, updateReview } from '../controllers/reviewController.js'
 import {protect} from '../middleware/authMiddleware.js'
 
 const router = express.Router()
+
+router.route('/')
+    .get(protect, getReviewsWrittenByUserId)
 
 // @route    POST api/review/:id
 // @desc     Create a review for a user
@@ -10,9 +13,13 @@ const router = express.Router()
 router.route('/:id')
     .post(protect, createReview)
     .get(getReviewsForUserId)
+    .delete(protect,deleteReview)
+    .put(protect, updateReview)
+    
+router.route('/:id/mark')
+    .post(protect, markReviewAsHelpful)
 
-router.route('/')
-    .get(protect, getReviewsWrittenByUserId)
+
 
     
 router.route('/:id/user')
