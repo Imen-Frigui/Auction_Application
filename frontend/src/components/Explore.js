@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import { Link } from 'react-router-dom'
-import { Carousel, Col, Image, Row } from 'react-bootstrap'
+import { Col, Image, Row } from 'react-bootstrap'
 import Loader from './Loader'
 import {listCategories, getProductsByFilter} from '../actions/categoryAction'
 import { useDispatch } from 'react-redux'

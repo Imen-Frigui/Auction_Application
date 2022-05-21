@@ -13,9 +13,10 @@ import UserEditScreen from './screens/UserEditScreen'
 import ProductListScreen from './screens/ProductListScreen'
 import ProductEditScreen from './screens/ProductEditScreen'
 import UserEditProduct from './screens/UserEditProduct'
-import ProfileUserScreen from "./screens/ProfileUserScreen"
 import CategoryListScreen from './screens/CategoryListScreen'
 import CategoryEditScreen from './screens/CategoryEditScreen'
+import ProductCreateScreen from './screens/ProductCreateScreen'
+import UserProfileScreen from './screens/UserProfileScreen'
 
 function App() {
   return (
@@ -28,7 +29,8 @@ function App() {
         <Route path='/login' element={<LoginScreen/>} />
         <Route path='/register' element={<RegisterScreen/>} />
         <Route path='/profile' element={<ProfileScreen/>} />
-        <Route path='/profile/:id' element={<ProfileUserScreen/>} />
+        <Route path='/profile/:id' element={<UserProfileScreen/>} />
+        <Route exact path='/create_product' element={<ProductCreateScreen/>} />
         <Route path='/post/:id' element={<ProductScreen/>} />
         <Route path='/myposts' />
         
@@ -37,6 +39,7 @@ function App() {
         <Route path='/user/:id/edit' element={<UserEditScreen/>} />
         
         <Route exact path='/admin/productlist' element={<ProductListScreen/>} />
+        <Route exact path='/admin/productlist/create_product' element={<ProductCreateScreen/>} />
         <Route exact path='/admin/productlist/:pageNumber' element={<ProductListScreen/>} />
         <Route path='/admin/product/:id/edit' element={<ProductEditScreen/>} />
         

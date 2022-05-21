@@ -16,7 +16,7 @@ const getProducts = AsyncHandler(async(req, res) => {
     
     const count = await Product.countDocuments({ ...keyword })
 
-    const products = await Product.find({...keyword}).limit(pageSize).skip(pageSize * (page - 1)).populate('user','category')
+    const products = await Product.find({...keyword}).limit(pageSize).skip(pageSize * (page - 1)).populate('user').populate('category')
 
 //throw new Error('Error')
   res.json({products, page, pages:Math.ceil(count /pageSize)})
@@ -25,7 +25,7 @@ const getProducts = AsyncHandler(async(req, res) => {
 
 //get SINGLE products ___ GET /api/product:/ID PUBLIC
 const getProductById = AsyncHandler(async(req, res) => {
-    const product = await Product.findById(req.params.id).populate('user','category')
+    const product = await Product.findById(req.params.id).populate('user').populate('category')
     if(product){
         res.json(product)
     }else{
@@ -34,7 +34,7 @@ const getProductById = AsyncHandler(async(req, res) => {
 })
 //delete SINGLE product ___ DELETE /api/product:/ID PRIVATE/ADMIN
 const deleteProduct = AsyncHandler(async(req, res) => {
-    const product = await Product.findById(req.params.id).populate('user','category')
+    const product = await Product.findById(req.params.id).populate('user').populate('category')
     if(product){
         await product.remove()
         res.json({message: 'product removed'})
@@ -64,7 +64,7 @@ const createProduct = AsyncHandler(async(req, res) => {
 const updateProduct = AsyncHandler(async(req, res) => {
     const {name, bid, category,description,image, brand,countDown} = req.body
 
-    const product = await Product.findById(req.params.id).populate('user','category')
+    const product = await Product.findById(req.params.id).populate('user').populate('category')
 
     if(product){
         product.name = name
@@ -89,12 +89,12 @@ const updateProduct = AsyncHandler(async(req, res) => {
 const createProductReview = AsyncHandler(async (req, res) => {
     const { rating, comment } = req.body
   
-    const product = await Product.findById(req.params.id).populate('user','category')
+    const product = await Product.findById(req.params.id).populate('user').populate('category')
   
     if (product) {
       const alreadyReviewed = product.reviews.find(
         (r) => r.user.toString() === req.user._id.toString()
-      ).populate('user','category')
+      ).populate('user').populate('category')
   
       if (alreadyReviewed) {
         res.status(400)
@@ -124,7 +124,7 @@ const createProductReview = AsyncHandler(async (req, res) => {
   
 //Get top reated producted ___ PUT /api/products/top PUBLIC
 const getTopProducts = AsyncHandler(async (req, res) => {
-    const products = await Product.find({}).sort({rating: -1}).limit(5).populate('user','category')
+    const products = await Product.find({}).populate('user').populate('category')
     res.json(products)
   })
 
@@ -136,7 +136,7 @@ const makeBid = AsyncHandler(async (req, res) => {
       bid: req.body.bid
     }
   
-    const product = await Product.findById(req.params.id).populate('user','category')
+    const product = await Product.findById(req.params.id).populate('user').populate('category')
   
     if (!product) {
         res.status(404)
@@ -166,7 +166,7 @@ const makeBid = AsyncHandler(async (req, res) => {
   
 //Delete a Bid ___ DELETE/api/products/:product_id/bid/bid_id PRIVATE
 const deleteBid = AsyncHandler(async (req, res) => {
-    const product = await Product.findById(req.params.product_id).populate('user','category')
+    const product = await Product.findById(req.params.product_id).populate('user').populate('category')
     product.bids = product.bids.filter(bid => {
         return bid._id != req.params.bid_id || bid.user.toString() != req.user.id
     })
@@ -178,7 +178,7 @@ const deleteBid = AsyncHandler(async (req, res) => {
   
 //End auction ___ POST /api/products/:id PRIVATE
 const endBiding = AsyncHandler(async (req, res) => {
-    let product = await Product.findById(req.params.id).populate('category','user')
+    let product = await Product.findById(req.params.id).populate('user').populate('category')
     if (product.user.toString() === req.user.id) {
         product.active = false
     } else {
@@ -192,7 +192,8 @@ const endBiding = AsyncHandler(async (req, res) => {
 
 //Create an auction by User  POST api/products PRIVATE
 const createAuction = AsyncHandler (async(req, res) =>{
-    const Auction = {
+  const category = Category.findById(req.body.category)  
+  const Auction = {
         ...req.body,
         user: req.user.id,
         startPrice:req.body.startPrice,
@@ -206,7 +207,7 @@ const createAuction = AsyncHandler (async(req, res) =>{
         throw new Error('fields are required')
     }
     let newAuction = await Product.create(Auction)
-    newAuction = await newAuction.populate('user','category')
+    newAuction = await newAuction.populate('user').populate('category')
     res.status(201).json(newAuction)
 })  
 
@@ -216,7 +217,7 @@ const getActiveListingsByUser = AsyncHandler(async (req, res) => {
     const products = await Product.find({
       user: req.params.user_id,
       active: true
-    }).populate('user','category')
+    }).populate('user').populate('category')
   
     res.status(200).json({ products })
   });
@@ -225,7 +226,7 @@ const getActiveListingsByUser = AsyncHandler(async (req, res) => {
     const products = await Product.find({
       user: req.params.user_id,
       active: false
-    }).populate('user','category')
+    }).populate('user').populate('category')
   
     res.status(200).json({ products })
   })
@@ -234,7 +235,7 @@ const getActiveListingsByUser = AsyncHandler(async (req, res) => {
 const updateProductUser = AsyncHandler(async(req, res) => {
   const {name, minIncrement, description , image, category,countDown, condition, endDate} = req.body
 
-  const product = await Product.findById(req.params.id).populate('user','category')
+  const product = await Product.findById(req.params.id).populate('user').populate('category')
 
   if(product){
       product.name = name
@@ -305,7 +306,7 @@ const updateProductUser = AsyncHandler(async(req, res) => {
 })*/
 
 const endExpiredProducts = AsyncHandler(async (req, res) => {
-  let products = await Product.find({}).populate('user','category')
+  let products = await Product.find({}).populate('user').populate('category')
   products.forEach(async(product) => {
     //await Product.find({}).populate('user')
     if(product.endDate.getTime()< Date.now()){
@@ -330,7 +331,7 @@ const getUsersWonListings = AsyncHandler(async (req, res) => {
   const products = await Product.find({
     winner: req.user.id,
     active: false
-  }).populate('user','category')
+  }).populate('user').populate('category')
   res.status(200).json({ products });
 })
 
@@ -343,12 +344,12 @@ const searchByQueryType = AsyncHandler(async (req, res) => {
 
 		switch (type) {
 			case 'category':
-				products = await Product.find({ category: query }).populate('category','user')
+				products = await Product.find({ category: query }).populate('user').populate('category')
 				break;
 		}
 
 		if (!products.length > 0) {
-			products = await Product.find({}).populate('category', 'user')
+			products = await Product.find({}).populate('user').populate('category')
 		}
 
 		res.json({ products })
@@ -360,4 +361,13 @@ const searchByQueryType = AsyncHandler(async (req, res) => {
 	}
 })
 
-export {getProductById, getProducts, deleteProduct, updateProduct, createProduct, createProductReview, getTopProducts, makeBid, endBiding, deleteBid, createAuction, getActiveListingsByUser, getInactiveListingsByUser, updateProductUser, endExpiredProducts,getUsersWonListings, searchByQueryType}
+
+const getProdutsByUser = AsyncHandler(async (req, res) => {
+  const products = await Product.find({
+    user: req.params.user_id,
+  }).populate('user').populate('category')
+
+  res.status(200).json({ products })
+})
+
+export {getProductById, getProducts, deleteProduct, updateProduct, createProduct, createProductReview, getTopProducts, makeBid, endBiding, deleteBid, createAuction, getActiveListingsByUser, getInactiveListingsByUser, updateProductUser, endExpiredProducts,getUsersWonListings, searchByQueryType, getProdutsByUser}

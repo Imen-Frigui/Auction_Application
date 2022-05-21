@@ -3,22 +3,9 @@ import Category from '../models/categoryModel.js'
 
 //get all categories ___ GET /api/category PUBLIC
 const getCategories = AsyncHandler(async(req, res) => {
-    const pageSize = 12
-    const page = Number(req.query.pageNumber) || 1
-  
-    const keyword = req.query.keyword ?{
-        name:{
-            $regex: req.query.keyword,
-            $options: 'i'
-        }
-    } : {}
-    
-    const count = await Category.countDocuments({ ...keyword })
-
-    const categories = await Category.find({...keyword}).limit(pageSize).skip(pageSize * (page - 1))
-
+const categories = await Category.find({})
 //throw new Error('Error')
-  res.json({categories, page, pages:Math.ceil(count /pageSize)})
+  res.json({categories})
 })
 
 //get SINGLE category ___ GET /api/product:/ID PUBLIC

@@ -4,10 +4,10 @@ import { PRODUCT_LIST_FAIL, PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS } from '.
 
 
 
-export const listCategories = (keyword = '', pageNumber='') => async(dispatch) => {
+export const listCategories = () => async(dispatch) => {
     try {
         dispatch ({ type: CATEGORY_LIST_REQUEST})
-        const { data } = await axios.get(`/api/category?keyword=${keyword}&pageNumber=${pageNumber}`)
+        const { data } = await axios.get(`/api/category`)
         dispatch({
             type: CATEGORY_LIST_SUCCESS,
             payload: data

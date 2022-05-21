@@ -38,12 +38,12 @@ const ProductListScreen = () => {
         if(!userInfo.isAdmin){
           history('/login')
         }
-        if(successCreate){
-          history(`/admin/product/${createdProduct._id}/edit`)
-        }else{
+        //if(successCreate){
+          //history(`/admin/product/${createdProduct._id}/edit`)
+       // }else{
           dispatch(listProducts('',pageNumber))
 
-        }
+       // }
 
     }, [history, userInfo, dispatch, successDelete, successCreate, createdProduct, pageNumber ])
 
@@ -53,8 +53,7 @@ const ProductListScreen = () => {
       }
     }
     const createProductHandler = () =>{
-       dispatch(createProduct())
-      
+      history(`/admin/productlist/create_product`)
     }
 
   return (

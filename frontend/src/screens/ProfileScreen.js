@@ -4,9 +4,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import { getUserDetails, updateUserProfile } from '../actions/userAction'
-import { activeProducts, inActiveProducts, deleteProduct, createProduct } from '../actions/productAction'
+import { activeProducts, inActiveProducts, deleteProduct } from '../actions/productAction'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import Paginate from '../components/Paginate'
 import ProductCard from '../components/ProductCard'
 
 
@@ -25,10 +24,10 @@ const ProfileScreen = () => {
   
 
   const productsActive = useSelector(state => state.productsActive)
-  const { loading:loadingActive, error:errorActive, products:activeP, page, pages } = productsActive
+  const { loading:loadingActive, error:errorActive, products:activeP } = productsActive
 
   const productsInActive = useSelector(state => state.productsInActive)
-  const { loading:loadingInActive, error:errorInActive, products:InActiveP, page:Inpage, pages:Inpages } = productsInActive
+  const { loading:loadingInActive, error:errorInActive, products:InActiveP } = productsInActive
 
   const userDetails = useSelector(state => state.userDetails )
   const { loading, error, user} = userDetails
@@ -42,8 +41,6 @@ const ProfileScreen = () => {
   const productDelete = useSelector(state => state.productDelete)
   const { loading:loadingDelete, error:errorDelete, success:successDelete } = productDelete 
 
-  const productCreate = useSelector(state => state.productCreate)
-  const { loading:loadingCreate, error:errorCreate, success:successCreate, product: createdProduct } = productCreate 
 
   
   const history = useNavigate();
@@ -53,8 +50,8 @@ const ProfileScreen = () => {
       history('/login')
     }
     else{
-        dispatch(inActiveProducts('', pageNumber))
-        dispatch(activeProducts('', pageNumber))
+        dispatch(inActiveProducts())
+        dispatch(activeProducts())
         if(!user?.name){
             dispatch(getUserDetails('profile'))
         }else{
@@ -63,7 +60,7 @@ const ProfileScreen = () => {
         }
 
     }
-  }, [dispatch, history, userInfo, user,successDelete, successCreate, createdProduct, pageNumber])
+  }, [dispatch, history, userInfo, user,successDelete, pageNumber])
 
   const submitHandler =(e) => {
     e.preventDefault()
@@ -84,7 +81,8 @@ const ProfileScreen = () => {
     }
   }
   const createProductHandler = () =>{
-   dispatch(createProduct())
+    history(`/create_product`)
+
  }
 
   return (
@@ -95,8 +93,6 @@ const ProfileScreen = () => {
       {message && <Message variant='danger'>ERROR: {message}</Message>}
       {error && <Message variant='danger'>{error}</Message>}
       {success && <Message variant='success'>Profile Updated</Message>}
-      {loadingCreate && <Loader/>}
-      {errorCreate && <Message>{errorCreate}</Message>}
       {loading && <Loader/>}
   
       <Form onSubmit={submitHandler}>
@@ -181,7 +177,7 @@ const ProfileScreen = () => {
                     <Button className='btn btn-block bg-warning mt-1' onClick={() => endHandler(product._id)}>END BID</Button>                         
                 </React.Fragment>
                 </Row>))}
-              <Paginate pages={pages} page={page}/></>
+              </>
               )}
             </Tab>
             <Tab eventKey="In-Active" title="In-Active Bids">
@@ -199,7 +195,7 @@ const ProfileScreen = () => {
                     
                   </React.Fragment>
                 </Row>  ))}
-              <Paginate pages={Inpages} page={Inpage}/></>
+              </>
               )}
             </Tab>
             </Tabs>
