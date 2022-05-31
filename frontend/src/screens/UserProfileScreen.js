@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Form, Button, Row, Col, Tabs, Tab, Toast,ListGroup, Container } from 'react-bootstrap'
+import { Form, Button, Row, Col, Tabs, Tab,ListGroup } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
@@ -10,17 +10,23 @@ import { useParams } from 'react-router-dom'
 import ProductCard from '../components/ProductCard'
 import Rating from '../components/Rating'
 import { Link } from 'react-router-dom'
-import ReviewCard from '../components/ReviewCard'
-
+import { createUserReview, makeReviewHelpful} from '../actions/reviewAction' 
+import { USER_CREATE_REVIEW_RESET, MAKE_HELPFUL_REVIEW_RESET } from '../constants/reviewConstants'
 
 const UserProfileScreen = () => {
 
+  const [title, setTitle] = useState('')
+  const [rating, setRating] = useState(0)
+  const [text, setText] = useState('')
 
   const {id} = useParams()
 
 
   const dispatch = useDispatch()
-  
+
+
+  const userLogin = useSelector((state) => state.userLogin)
+  const { userInfo } = userLogin
 
   const profileInfo = useSelector(state => state.profileInfo)
   const { loading, error, user } = profileInfo
@@ -30,23 +36,46 @@ const UserProfileScreen = () => {
 
   const reviewList = useSelector(state => state.reviewList)
   const {  loading:loadingR, error:errorR, reviews } = reviewList
+
+  const userReviewCreate = useSelector((state) => state.userReviewCreate)
+  const {success: successUserReview, loading: loadingUserReview, error: errorUserReview} = userReviewCreate
+
+  const makeHelpful = useSelector(state => state.makeHelpful)
+  const { loading:loadingHelpul, error:errorHelpful, success:successHelpful } = makeHelpful 
   
-  const userLogin = useSelector((state) => state.userLogin)
-  const { userInfo } = userLogin
+
 
 
   
   useEffect(() => {
+    if (successUserReview){
+      setRating('0')
+      setText('')
+      setTitle('')
+      dispatch(listReviewsForUser(id))
+      dispatch({type:USER_CREATE_REVIEW_RESET})
+    }
+    if (successHelpful){
+      dispatch(listReviewsForUser(id))
+    }
 
     dispatch(profile(id))
     dispatch(userPosts(id))
     dispatch(listReviewsForUser(id))
 
     }
-  , [dispatch, id])
+  , [dispatch, id, successUserReview, successHelpful, userInfo])
 
-  const submitHandler =(e) => {
-//
+
+  const submitHandler = (e) => {
+    e.preventDefault()
+    dispatch(
+      createUserReview(id, {rating,text,title})
+    )
+  }
+
+  const thumsup =(id) => {
+    dispatch(makeReviewHelpful(id))
   }
      
 
@@ -87,17 +116,20 @@ const UserProfileScreen = () => {
                         )}        
                     </Tab>
                     <Tab eventKey="reviews" title="reviews">
+                      {loadingHelpul && <Loader/>}
+                      {successHelpful}
+                      {errorHelpful && <Message>{errorHelpful}</Message>}
                     {loadingR ? <Loader>loading..</Loader> : errorR ? ( <Message variant='danger' >{errorR}</Message> ) : (
                         <Row>
                             <Col>
                         {reviews.map((review) => (
-                            <Row>
+                            <Row key={review._id}>
                                 <Col>
                                 <React.Fragment key={review._id}>
                                     <ListGroup variant='fluid' className="mb-2">
                                         <ListGroup.Item>
                                             <h4 style={{ fontSize: 27 }}>{review.title}</h4>
-                                            <Rating>{review.rating}</Rating>
+                                            <Rating value={review.rating}/>
                                             <p className='small-text'>
                                                 By{' '}
                                                     <Link to={`/profile/${review.writtenBy}`}>
@@ -107,6 +139,12 @@ const UserProfileScreen = () => {
                                             <strong style={{ fontSize: 20 }}>{review.text}</strong>
                                             
                                         </ListGroup.Item> 
+                                        <ListGroup.Item>
+                                            {userInfo ? (
+                                              <div><Button className='fas fa-thumbs-up'  onClick={() => thumsup(review._id)}/>
+                                               {review.helpfulCount} </div> ):(
+                                              <div>nope</div> )}
+                                        </ListGroup.Item>
                                     </ListGroup>
                                 </React.Fragment>  
                                 </Col>
@@ -116,12 +154,31 @@ const UserProfileScreen = () => {
                         </Col>
                         <Col><Col>
                                 <h2>Write a Customer Review</h2>
+                                {successUserReview && (
+                    <Message variant='success'>
+                      Review submitted successfully
+                    </Message>
+                  )}
+                  {loadingUserReview && <Loader />}
+                  {errorUserReview && (
+                    <Message variant='danger'>{errorUserReview}</Message>
+                  )}
                   {userInfo ? (
                     <Form onSubmit={submitHandler}>
+                      <Form.Group controlId='title'>
+                        <Form.Label>Title</Form.Label>
+                        <Form.Control
+                          type='text'
+                          value={title}
+                          onChange={(e) => setTitle(e.target.value)}
+                        ></Form.Control>
+                      </Form.Group>
                       <Form.Group controlId='rating'>
                         <Form.Label>Rating</Form.Label>
                         <Form.Control
                           as='select'
+                          value={rating}
+                          onChange={(e) => setRating (e.target.value)}
                         >
                           <option value=''>Select...</option>
                           <option value='1'>1 - Poor</option>
@@ -131,16 +188,19 @@ const UserProfileScreen = () => {
                           <option value='5'>5 - Excellent</option>
                         </Form.Control>
                       </Form.Group>
-                      <Form.Group controlId='comment'>
+                      <Form.Group controlId='text'>
                         <Form.Label>Comment</Form.Label>
                         <Form.Control
                           as='textarea'
                           row='3'
+                          value={text}
+                          onChange={(e) => setText(e.target.value)}
                         ></Form.Control>
                       </Form.Group>
                       <Button
                         type='submit'
                         variant='primary'
+                        disabled={loadingUserReview}
                       >
                         Submit
                       </Button>

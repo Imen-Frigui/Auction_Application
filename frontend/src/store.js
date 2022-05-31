@@ -1,10 +1,10 @@
 import {createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
-import {productListReducer, productDetailsReducer, productDeleteReducer, productCreateReducer, productUpdateReducer, productReviewCreateReducer, productTopRatedReducer, makeBidReducer, userUpdateProductReducer, activeProductsReducer, inActiveProductsReducer, userPostsReducer} from './reducers/productsReducers'
+import {productListReducer, productDetailsReducer, productDeleteReducer, productCreateReducer, productUpdateReducer, productTopRatedReducer, makeBidReducer, userUpdateProductReducer, activeProductsReducer, inActiveProductsReducer, userPostsReducer} from './reducers/productsReducers'
 import{userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer, userListReducer, userDeleteReducer, userUpdateReducer, profileReducer}from './reducers/userReducers'
 import{ categoryCreateReducer, categoryDeleteReducer, categoryListReducer, categoryUpdateReducer, categoryDetailsReducer, getProductsByFilterReducer} from './reducers/categoryReducer'
-import { listReviewsForUserreducer } from './reducers/reviewReducer'
+import { listReviewsForUserreducer, userReviewCreateReducer, makeReviewHelpfulReducer } from './reducers/reviewReducer'
 
 const reducer = combineReducers({
     productList: productListReducer,
@@ -27,13 +27,14 @@ const reducer = combineReducers({
     categoryDelete: categoryDeleteReducer,
     categoryUpdate: categoryUpdateReducer,
     getProductsByFilter: getProductsByFilterReducer,
-    productReviewCreate: productReviewCreateReducer,
     productTopRated:productTopRatedReducer,
     bidMake:makeBidReducer,
     userUpdateProduct:userUpdateProductReducer,
     productsActive:activeProductsReducer,
     productsInActive:inActiveProductsReducer,
     reviewList: listReviewsForUserreducer,
+    userReviewCreate: userReviewCreateReducer,
+    makeHelpful: makeReviewHelpfulReducer,
 
 })
 

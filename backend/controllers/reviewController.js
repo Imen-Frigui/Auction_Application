@@ -73,18 +73,20 @@ const updateReview = AsyncHandler(async (req, res) => {
   });
   
 const markReviewAsHelpful = AsyncHandler(async (req, res) => {
-    const review = await Review.findById(req.params.id)
+    let review = await Review.findById(req.params.id)
   
     const found = review.markedAsHelpful.some(el => el.user == req.user.id)
   
     if (!found) {
       review.markedAsHelpful.push({ user: req.user.id })
       review.helpfulCount = review.helpfulCount + 1
-    }
-  
-    await review.save()
-  
-    res.status(200).json({ review })
+      
+      const rev = await review.save()
+      res.json({ rev })
+    }else{
+
+    res.status(404)
+    throw new Error ('')}
   })
    
 

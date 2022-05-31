@@ -11,13 +11,22 @@ import Countdown from '../components/Countdown'
 import Product from '../components/Product'
 import Paginate from '../components/Paginate'
 import { PRODUCT_ADD_BID_RESET } from '../constants/productConstants'
+import {
+  FacebookShareButton,
+  WhatsappShareButton,
+  WhatsappIcon,
+  FacebookIcon,
+} from 'react-share'
 
 
 const ProductScreen = () => {
+
  
     const dispatch = useDispatch()
     const { id } = useParams()
     const history = useNavigate()
+
+    const shareUrl = `http://localhost:3000/post/${id}`
 
 
     const [message, setMessage] = useState(null)
@@ -94,6 +103,24 @@ const ProductScreen = () => {
                         <strong>Description</strong>: {product.description
               ? <h4>{product.description}</h4>
               : <h4>The seller has not provided a description for this item</h4>}
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                    <strong className='mr-2'>share this post</strong>
+                <FacebookShareButton className='ml-1 mr-1'
+          url={shareUrl}
+          quote={'Title or jo bhi aapko likhna ho'}
+          hashtag={'#portfolio...'}
+        >
+          <FacebookIcon size={40} round={true} />
+        </FacebookShareButton>
+
+        <WhatsappShareButton
+          url={shareUrl}
+          quote={'Title or jo bhi aapko likhna ho'}
+          hashtag={'#portfolio...'}
+        >
+          <WhatsappIcon size={40} round={true} />
+        </WhatsappShareButton>
                     </ListGroup.Item>
                 </ListGroup>
             </Col>
@@ -261,6 +288,7 @@ const ProductScreen = () => {
         )}
 
           
+
           <h2 className='large-heading'>More Items to consider</h2>
           <>
           <Row>

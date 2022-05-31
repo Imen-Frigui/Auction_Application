@@ -9,7 +9,9 @@ import { login } from '../actions/userAction'
 import { useNavigate } from 'react-router-dom'
 import { useLocation } from 'react-router-dom'
 
+
 const LoginScreen = () => {
+
   const [email, setEmail] = useState('')
   const [password, setPassowrd] = useState('')
   
@@ -17,6 +19,7 @@ const LoginScreen = () => {
 
   const userLogin = useSelector(state => state.userLogin )
   const { loading, error, userInfo} = userLogin
+
 
   const location = useLocation()
   const history = useNavigate();
@@ -33,7 +36,10 @@ const LoginScreen = () => {
     e.preventDefault()
     dispatch(login(email, password))
   }
+  
+
   return (
+    <>
     <FormContainer>
       <h1>Sign In</h1>
       {error && <Message variant='danger'>{error}</Message>}
@@ -63,6 +69,7 @@ const LoginScreen = () => {
         </Button>
       </Form>
 
+
       <Row className='py-3'>
         <Col>
           New Customer?{' '}
@@ -72,6 +79,7 @@ const LoginScreen = () => {
         </Col>
       </Row>
     </FormContainer>
+     </>
   )
 }
 
