@@ -1,0 +1,50 @@
+{
+  "name": "new",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "browser": {
+    "crypto": false,
+    "stream": false,
+    "fs": false,
+    "os": false
+  },
+  "scripts": {
+    "start": "node backend/index",
+    "server": "nodemon backend/index.js",
+    "client": "npm start --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "data:import": "node backend/seedr",
+    "data:destroy": "node backend/seedr -d"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Imen-Frigui/Front-end.git"
+  },
+  "author": "Imen Frigui",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Imen-Frigui/Front-end/issues"
+  },
+  "homepage": "https://github.com/Imen-Frigui/Front-end#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "crypto-js": "^4.1.1",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "express-async-handler": "^1.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.2.6",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.4",
+    "path": "^0.12.7",
+    "prop-types": "^15.8.1",
+    "react-helmet": "^6.1.0",
+    "stream": "^0.0.2"
+  },
+  "devDependencies": {
+    "concurrently": "^7.0.0",
+    "nodemon": "^2.0.15"
+  }
+}
