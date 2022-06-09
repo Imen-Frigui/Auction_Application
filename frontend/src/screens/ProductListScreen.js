@@ -82,7 +82,7 @@ const ProductListScreen = () => {
                         <th>NAME</th>
                         <th>BID</th>
                         <th>CATEGPRY</th>
-                        <th>BRAND</th>
+                        <th>state</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -91,9 +91,15 @@ const ProductListScreen = () => {
               <tr key={product._id}>
                 <td>{product._id}</td>
                 <td>{product.name}</td>
-                <td>{product.bid}</td>
+                <td>{product.currentPrice}</td>
                 <td>{product.category?.name}</td>
-                <td>{product.brand}</td>
+                <td>
+                  {product.active ? (
+                    <i className='fas fa-check' style={{ color: 'green' }}></i>
+                  ) : (
+                    <i className='fas fa-times' style={{ color: 'red' }}></i>
+                  )}
+                </td>
                 <td>
                   <LinkContainer to={`/admin/product/${product._id}/edit`}>
                     <Button variant='light' className='btn-sm'>

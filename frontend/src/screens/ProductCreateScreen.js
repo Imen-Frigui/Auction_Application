@@ -22,6 +22,8 @@ const ProductCreateScreen = () => {
     const [uploading, setUploading] = useState(false)
 
 
+  const categoryList = useSelector(state => state.categoryList)
+  const { categories } = categoryList 
 
   const userLogin = useSelector(state => state.userLogin )
   const {userInfo} = userLogin
@@ -43,9 +45,18 @@ const ProductCreateScreen = () => {
             }
     }, [dispatch, history, success, userInfo])
 
+    const handleProductChange = e => {
+      setCategory({
+
+        [e.target.name]: e.target.value,
+      })
+      console.log(setCategory)
+    }
+
   const submitHandler =(e) => {
     e.preventDefault()
-    dispatch(createProduct({_id: id, name, minIncrement, description, category,image, endDate, setStartPrice}))
+    dispatch(createProduct({_id: id, name, minIncrement, description, category,image, endDate, startPrice, condition}))
+    console.log(category)
   }
 
   const uploadFileHandler = async (e) => {
@@ -107,14 +118,14 @@ const ProductCreateScreen = () => {
               {uploading && <Loader/>}
             </Form.Group>
             
-            <Form.Group controlId='category'>
+           {/* <Form.Group controlId='category'>
               <Form.Label>category</Form.Label>
               <Form.Control
                 type='text'
                 placeholder='Enter brand'
                 value={category} onChange={(e) => setCategory(e.target.value)}
               ></Form.Control>
-            </Form.Group>
+            </Form.Group>*/}
             
             <Form.Group controlId='endDate'>
               <Form.Label>endDate</Form.Label>
@@ -151,6 +162,20 @@ const ProductCreateScreen = () => {
               ></Form.Control>
             </Form.Group>
 
+            <Form.Group controlId='category'>
+            <Form.Label>category</Form.Label>
+            <Form.Control
+                          as='select'
+                          name='category'
+                          onChange={(e) => setCategory (e.target.value)}
+                        >{categories && categories.map(category =>(
+                          <option key={category._id} value={category._id}>
+                          {category.name}</option>
+                        ))
+                            }
+                        </Form.Control>
+            
+            </Form.Group>
             <Button type='submit' variant='primary' className='mt-3'>
               CREATE
             </Button>

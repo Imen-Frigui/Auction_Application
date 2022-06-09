@@ -13,11 +13,11 @@ const ProductEditScreen = () => {
   const { id } = useParams()
   const [name, setName] = useState('')
   const [image, setImage] = useState('')
-  const [brand, setBrand] = useState('')
   const [category, setCategory] = useState('')
-  const [countDown, setCountDown] = useState(0)
+  const [endDate , setEndDate] = useState('')
+  const [minIncrement, setMinIncrement] = useState(0)
   const [description, setDescription] = useState('')
-  const [bid, setBid] = useState(0)
+  const [condition, setCondition] = useState('')
   const [uploading, setUploading] = useState(false)
 
 
@@ -44,10 +44,9 @@ const ProductEditScreen = () => {
   
       }else{
         setName(product?.name)
-        setBrand(product?.brand)
-        setBid(product?.bid)
+        setMinIncrement(product?.minIncrement)
+        setEndDate(product?.endDate)
         setImage(product?.image)
-        setCountDown(product?.countDown)
         setCategory(product?.category)
         setDescription(product?.description)
 
@@ -56,7 +55,7 @@ const ProductEditScreen = () => {
 
   const submitHandler =(e) => {
     e.preventDefault()
-    dispatch(updateProduct({_id: id, name,bid, brand, description, category,image, countDown}))
+    dispatch(updateProduct({_id: id, name, minIncrement, description, category,image, endDate}))
   }
 
   const uploadFileHandler = async (e) => {
@@ -92,7 +91,7 @@ const ProductEditScreen = () => {
       {loading ? <Loader/> : error ? <Message variant='danger'>{error}</Message> :(
           <Form onSubmit={submitHandler}>
           <Form.Group controlId='name'>
-              <Form.Label>Name</Form.Label>
+          <Form.Label>Name</Form.Label>
               <Form.Control
                 type='name'
                 placeholder='Enter name'
@@ -100,12 +99,12 @@ const ProductEditScreen = () => {
               ></Form.Control>
             </Form.Group>
     
-            <Form.Group controlId='bid'>
-              <Form.Label>Bid</Form.Label>
+            <Form.Group controlId='condition'>
+              <Form.Label>condition</Form.Label>
               <Form.Control
-                type='number'
-                placeholder='Enter biding amount'
-                value={bid} onChange={(e) => setBid(e.target.value)}
+                type='text'
+                placeholder='Eitheir uesed or new'
+                value={condition} onChange={(e) => setCondition(e.target.value)}
               ></Form.Control>
             </Form.Group>
     
@@ -119,21 +118,29 @@ const ProductEditScreen = () => {
               {uploading && <Loader/>}
             </Form.Group>
             
-            <Form.Group controlId='brand'>
-              <Form.Label>brand</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Enter brand'
-                value={brand} onChange={(e) => setBrand(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
-            
             <Form.Group controlId='category'>
               <Form.Label>category</Form.Label>
               <Form.Control
                 type='text'
-                placeholder='Enter biding amount'
+                placeholder='Enter brand'
                 value={category} onChange={(e) => setCategory(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+            
+            <Form.Group controlId='endDate'>
+              <Form.Label>endDate</Form.Label>
+              <Form.Control
+                type='Date'
+                value={endDate} onChange={(e) => setEndDate(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+
+            <Form.Group controlId='minIncrement'>
+              <Form.Label>minIncrement</Form.Label>
+              <Form.Control
+                type='number'
+                placeholder='minIncrement'
+                value={minIncrement} onChange={(e) => setMinIncrement(e.target.value)}
               ></Form.Control>
             </Form.Group>
             
@@ -143,14 +150,6 @@ const ProductEditScreen = () => {
                 type='text'
                 placeholder='describe product'
                 value={description} onChange={(e) => setDescription(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
-            <Form.Group controlId='countDownn'>
-              <Form.Label>countDown</Form.Label>
-              <Form.Control
-                type='Date'
-                placeholder='describe product'
-                value={countDown} onChange={(e) => setCountDown(e.target.value)}
               ></Form.Control>
             </Form.Group>
     

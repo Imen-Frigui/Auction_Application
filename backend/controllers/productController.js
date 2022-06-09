@@ -192,14 +192,20 @@ const endBiding = AsyncHandler(async (req, res) => {
 
 //Create an auction by User  POST api/products PRIVATE
 const createAuction = AsyncHandler (async(req, res) =>{
-  const category = Category.findById(req.body.category) 
-  if(!category) return res.json('Invalid category')
+  const { name, startPrice, description, endDate, condition, image, minIncrement,category } = req.body
+  //const category = Category.findById(req.body.category) 
+  //if(!category) return res.json('Invalid category')
   const Auction = new Product({
-        ...req.body,
-        user: req.user.id,
-        category: '62855e279cf49cda264302d9',
-        startPrice:req.body.startPrice,
-        minIncrement: req.body.minIncrement})
+        user: req.user._id,
+        name: name,
+        startPrice: startPrice,
+        endDate: endDate,
+        condition: condition,
+        category: category,
+        startPrice: startPrice,
+        image: image,
+        description: description,
+        minIncrement: minIncrement})
     if(Auction.minIncrement % 1 !==0 && !!Auction.minIncrement && Auction.startPrice % 1 !==0 && !!Auction.startPrice)    {
         res.status(400)
         throw new Error('Money fields are required')
@@ -209,7 +215,7 @@ const createAuction = AsyncHandler (async(req, res) =>{
         throw new Error('fields are required')
     }
     let newAuction = await Product.create(Auction)
-    newAuction = await newAuction.populate('user').populate('category')
+    newAuction = await newAuction
     res.status(201).json(newAuction)
 })  
 

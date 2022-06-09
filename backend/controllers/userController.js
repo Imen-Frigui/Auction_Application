@@ -158,62 +158,25 @@ const updateUser = AsyncHandler(async (req, res) => {
 })   
 
 
-const client = new OAuth2Client('554222349653-ffn9397f9atsd5farm8dpeaf2slbg71t.apps.googleusercontent.com')
-const googlelogin = (req, res) => {
-    const { idToken } = req.body;
-  
-    client
-      .verifyIdToken({ idToken, audience: process.env.GOOGLE_CLIENT_ID })
-      .then((response) => {
-        const { email_verified, name, email } = response.payload;
-  
-        if (email_verified) {
-          User.findOne({ email }).exec((err, user) => {
-            if (user) {
-              const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-                expiresIn: "7d"
-              });
-              const { _id, email, name } = user;
-              return res.json({
-                token,
-                user: { _id, email, name }
-              });
-            } else {
-              const password = email + process.env.JWT_SECRET;
-  
-              user = new User({ name, email, password });
-              user
-                .save((err, data) => {
-                  if (err) {
-                    return res.status(400).json({
-                      error: "User signup failed with google"
-                    });
-                  }
-                  const token = jwt.sign(
-                    { _id: data._id },
-                    process.env.JWT_SECRET,
-                    { expiresIn: "7d" }
-                  );
-                  const { _id, email, name } = data;
-  
-                  return res.json({
-                    token,
-                    user: { _id, email, name }
-                  });
-                })
-                .catch((err) => {
-                  return res.status(401).json({
-                    message: "signup error"
-                  });
-                });
-            }
-          });
-        } else {
-          return res.status(400).json({
-            error: "Google login failed. Try again"
-          });
-        }
-      });
-  };
-  
-export { profile,authUser, getUserProfile, registerUser, updateUserProfile, getUsers, deleteUser, getUserById, updateUser, googlelogin}
+const follow = AsyncHandler(async (req, res) => {
+  if (req.body.userId !== req.params.id) {
+    try {
+      const user = await User.findById(req.params.id);
+      const currentUser = await User.findById(req.body.userId);
+      if (!user.followers.includes(req.body.userId)) {
+        await user.updateOne({ $push: { followers: req.body.userId } });
+        await currentUser.updateOne({ $push: { followings: req.params.id } });
+        res.status(200).json("user has been followed");
+      } else {
+        res.status(403).json("you allready follow this user");
+      }
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  } else {
+    res.status(403).json("you cant follow yourself");
+  }
+})
+
+
+export { profile,authUser, getUserProfile, registerUser, updateUserProfile, getUsers, deleteUser, getUserById, updateUser, follow}

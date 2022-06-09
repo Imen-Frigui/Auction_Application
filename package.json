@@ -35,6 +35,7 @@
     "express": "^4.17.3",
     "express-async-handler": "^1.2.0",
     "google-auth-library": "^8.0.2",
+    "javascript-time-ago": "^2.5.4",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.2.6",
     "morgan": "^1.10.0",
@@ -46,7 +47,8 @@
     "react-google-login": "^5.2.2",
     "react-helmet": "^6.1.0",
     "react-share": "^4.4.0",
-    "stream": "^0.0.2"
+    "stream": "^0.0.2",
+    "timeago.js": "^4.0.2"
   },
   "devDependencies": {
     "concurrently": "^7.0.0",

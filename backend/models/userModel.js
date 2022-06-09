@@ -29,6 +29,14 @@ const userSchema = mongoose.Schema({
         set: val => Math.round(val * 10) / 10
       },
     bio: String,
+    followers: {
+        type: Array,
+        default: [],
+      },
+    followings: {
+        type: Array,
+        default: [],
+      },
 
 },{timestamps:true,})
 

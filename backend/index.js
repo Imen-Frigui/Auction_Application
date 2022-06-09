@@ -9,6 +9,8 @@ import userRoutes from './routes/userRoutes.js'
 import uploadRoutes from './routes/uploadRoutes.js'
 import categoryRoutes from './routes/categoryRoutes.js'
 import reviewRoutes from './routes/reviewRoutes.js'
+import conversationRoutes from './routes/conversationRoutes.js'
+import messageRoutes from './routes/messageRoutes.js'
 
 import {notFound, errorHandler} from './middleware/errorMiddleware.js'
 
@@ -33,6 +35,8 @@ app.use('/api/products',productRoutes)
 app.use('/api/category',categoryRoutes)
 app.use('/api/users',userRoutes)
 app.use('/api/review',reviewRoutes)
+app.use('/api/conversation',conversationRoutes)
+app.use('/api/message',messageRoutes)
 app.use('/api/upload',uploadRoutes)
 
 const __dirname = path.resolve()

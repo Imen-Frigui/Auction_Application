@@ -17,6 +17,7 @@ import CategoryListScreen from './screens/CategoryListScreen'
 import CategoryEditScreen from './screens/CategoryEditScreen'
 import ProductCreateScreen from './screens/ProductCreateScreen'
 import UserProfileScreen from './screens/UserProfileScreen'
+import Chat from './screens/Chat'
 
 function App() {
   return (
@@ -32,7 +33,7 @@ function App() {
         <Route path='/profile/:id' element={<UserProfileScreen/>} />
         <Route exact path='/create_product' element={<ProductCreateScreen/>} />
         <Route path='/post/:id' element={<ProductScreen/>} />
-        <Route path='/myposts' />
+        <Route path='/chat' element={<Chat/>}/>
         
         <Route path='/admin/userlist' element={<UserListScreen/>} />
         <Route path='/admin/user/:id/edit' element={<UserEditScreen/>} />

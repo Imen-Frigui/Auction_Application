@@ -34,8 +34,8 @@ const Header = () => {
                         {/*<Route render={({history}) =>{ <SearchBox history={history}/>}} /> */}
                             
                         <Nav className="ml-auto">
-                        <LinkContainer to ='/post'><Nav.Link>
-                          <i className="fa fa-pencil-square"></i>MyPosts</Nav.Link>
+                        <LinkContainer to ='/chat'><Nav.Link>
+                          <i className="fas fa-comment-dots"></i>Chat</Nav.Link>
                         </LinkContainer>
                         {userInfo ? (
                           <NavDropdown title={userInfo.name} id='username'>

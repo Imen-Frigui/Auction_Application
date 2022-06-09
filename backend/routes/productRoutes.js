@@ -1,11 +1,11 @@
 import express from 'express'
-import { getProdutsByUser,getProductById, getProducts, deleteProduct, updateProduct, createProduct, createProductReview, getTopProducts, makeBid, endBiding, deleteBid, createAuction, getActiveListingsByUser, getInactiveListingsByUser, updateProductUser, endExpiredProducts, searchByQueryType} from '../controllers/productController.js'
+import { getProdutsByUser,getProductById, getProducts, deleteProduct, updateProduct, createProductReview, getTopProducts, makeBid, endBiding, deleteBid, createAuction, getActiveListingsByUser, getInactiveListingsByUser, updateProductUser, endExpiredProducts, searchByQueryType} from '../controllers/productController.js'
 import {protect, admin} from '../middleware/authMiddleware.js'
 
 const router = express.Router()
 
 //get all products ___ GET /api/products PUBLIC
-router.route('/').post(protect, createAuction).get(getProducts,endExpiredProducts)
+router.route('/').post(protect, createAuction).get(getProducts)
 router.route('/p').get(endExpiredProducts)
 router.get('/top', getTopProducts)
 //router.route('/end').get(endExpiredProducts)
@@ -20,7 +20,7 @@ router.post('/search', searchByQueryType)
 router.route('/:id').put(protect, updateProductUser).
 post(protect, endBiding)
 .get(getProductById)
-.delete(protect, admin , deleteProduct)
+.delete(protect , deleteProduct)
 .put(protect, admin, updateProduct)
 
 router.route('/:id/bid/:bid_id').delete(protect, deleteBid)
